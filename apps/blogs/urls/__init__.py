@@ -1,15 +1,14 @@
 from django.conf.urls.defaults import *
 
 import apps.search
-from apps.blog.models import Entry
-from apps.blog.views import BlogFrontView, stop_errors
+from apps.blogs.models import Entry
+from apps.blogs.views import BlogListView, BlogPostListView
 
 urlpatterns = patterns('',
-    url(r'^$', 
-        BlogFrontView.as_view(), 
-        name='blog_front'),
-    (r'^search/$', include('apps.search.urls')),
-    (r'^archive/', include('apps.blog.urls.archives')), 
-    (r'^category/', include('apps.blog.urls.categories')),
-    url(r'^wp-login.php$', 'stop_errors', name = 'stop_errors'),
+    url(r'^$', BlogListView.as_view(), name='all_blog_list'),
+    url(r'^(?P<blog>[-\w0-9]+)/$', BlogPostListView.as_view(), name='blog_post_list'),
+    url(r'^search/$', include('apps.search.urls')),
+    url(r'^archive/', include('apps.blogs.urls.archives')), 
+    #url(r'^category/', include('apps.blogs.urls.categories')),
+ 
 )    

@@ -1,7 +1,7 @@
 from django import template
 from django.template.loader import render_to_string
 
-from apps.blog.models import Entry
+from apps.blogs.models import Entry
 
 def do_archive_list(parser, token):
     bits = token.contents.split()

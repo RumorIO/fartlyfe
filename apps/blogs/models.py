@@ -1,6 +1,7 @@
 import datetime
 from tinymce.models import HTMLField
-from photologue.models import Gallery
+from photologue.models import Gallery, Photo
+from tagging.fields import TagField
 
 from django.db import models
 from django.conf import settings
@@ -14,7 +15,7 @@ class Blog(models.Model):
     slug = models.SlugField(unique=True, help_text="Automatically comes from title. Must be unique.", blank=True, editable=False)
     description = HTMLField()
     picture = models.ImageField(upload_to="media/blog/images/logos/", blank=True)
-    author = models.ForeignKey(User)
+    authors = models.ManyToManyField(User)
 
     class Meta:
         ordering = ['title']
@@ -24,7 +25,7 @@ class Blog(models.Model):
         super(Blog, self).save()
 
     def __unicode__(self):
-        return self.title
+        return unicode(self.title)
 
     def get_absolute_url(self):
         return "/blogs/%s/" %self.slug
@@ -32,8 +33,6 @@ class Blog(models.Model):
     def live_entry_set(self):
         from apps.blogs.models import Entry
         return self.entry_set.filter(status=Entry.LIVE_STATUS)
-
-
 
 class Category(models.Model):
 
@@ -62,7 +61,7 @@ class Category(models.Model):
 
 class LiveEntryManager(models.Manager):
     def get_query_set(self):
-        return super(LiveEntryManager,self).get_query_set().filter(status=self.model.LIVE_STATUS)
+        return super(LiveEntryManager,self).get_query_set().filter(status=self.model.LIVE_STATUS).filter(pub_date__lte=datetime.datetime.now())
 
 class Entry(models.Model):
     LIVE_STATUS = 1
@@ -71,6 +70,7 @@ class Entry(models.Model):
         (LIVE_STATUS, 'Live'),
         (DRAFT_STATUS, 'Draft'),)
 
+    
     live = LiveEntryManager()
     objects = models.Manager()
     
@@ -78,11 +78,14 @@ class Entry(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=LIVE_STATUS)
     title = models.CharField(max_length=250)
     body = HTMLField()
+    summary = models.CharField(max_length=250)
     pub_date = models.DateTimeField(default=datetime.datetime.now)
+    posted = models.DateTimeField(default=datetime.datetime.now, editable=False)
     slug = models.SlugField(unique_for_date='pub_date', editable=False, blank=True)
     categories = models.ManyToManyField(Category)
+    cover = models.ForeignKey(Photo)
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
-
+    tags = TagField(help_text="Seperate with commas. Put mutli-word tags in quotes.", verbose_name='tags')
 
     def save(self):
         self.slug = slugify(self.title)
@@ -95,12 +98,40 @@ class Entry(models.Model):
         ordering = ['-pub_date']
 
     def __unicode__(self):
-        return self.title
+        return unicode(self.title)
     
     @models.permalink
     def get_absolute_url(self):
-        return ('entry_archive', (), { 'year': self.pub_date.strftime("%Y"),
-                                             'month': self.pub_date.strftime("%b").lower(),
-                                             'day': self.pub_date.strftime("%d"),
-                                             'slug': self.slug })
+        return ('entry_archive', (), { 'blog': self.blog.slug,
+                                        'year': self.pub_date.strftime("%Y"),
+                                        'month': self.pub_date.strftime("%b").lower(),
+                                        'day': self.pub_date.strftime("%d"),
+                                        'slug': self.slug })
+
+class TopEntry(models.Model):
+
+    PLACEMENT = (
+        (1, 'Headline'),
+        (2, 'Left'),
+        (3, 'Middle'),
+        (4, 'Right'),)
+    
+    entry = models.ForeignKey(Entry)
+    front_status = models.IntegerField(choices=PLACEMENT, null=True, default=0)
+
+    class Meta:
+        verbose_name_plural = "Top Entries"
+    
+    def save(self):
+        if self.front_status:
+            try:
+                prior = TopEntry.objects.get(front_status=self.front_status)
+                if prior.entry.title != self.entry.title:
+                    prior.delete()
+            except TopEntry.DoesNotExist:
+                pass
+        super(TopEntry, self).save()
+
+    def __unicode__(self):
+        return unicode(str(self.entry) + ' - ' + str(self.get_front_status_display()))
 

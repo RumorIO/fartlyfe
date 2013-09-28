@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
-from apps.blog.models import Category
-from apps.blog.views import AllCategoryView, ByCategoryView
+from apps.blogs.models import Category
+from apps.blogs.views import AllCategoryView, ByCategoryView
 
 urlpatterns = patterns('',
     url(r'^$', AllCategoryView.as_view()),

@@ -2,7 +2,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.db.models import Q
 
-from apps.blog.models import Entry
+from apps.blogs.models import Entry
 
 import re
 

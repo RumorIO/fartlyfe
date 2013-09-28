@@ -2,17 +2,38 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.views.generic import ListView, DetailView
 from django.views.generic.dates import YearArchiveView, MonthArchiveView, ArchiveIndexView
 
-from apps.blog.models import Category, Entry
+from apps.blogs.models import Category, Entry, Blog
 
-class BlogFrontView(ArchiveIndexView):
-    template_name = 'blog/entry_archive.html'
+class FrontPageView(ArchiveIndexView):
+    template_name = 'blogs/entry_archive.html'
     context_object_name = 'latest'
     date_field = 'pub_date'
     paginate_by = 4
-    queryset = Entry.live.all()
+    queryset = Entry.live.filter(blog__slug="fart-lyfe")
+
+class BlogListView(ListView):
+    template_name = 'top_list.html'
+    context_object_name = 'items'
+    paginate_by = 10
+    queryset = Blog.objects.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super(BlogListView, self).get_context_data( **kwargs)
+        context['item_type']= 'blog'
+        return context
+
+class BlogPostListView(FrontPageView):
+    
+    def get_queryset(self):
+        return Entry.live.filter(blog__slug=self.kwargs['blog'])
+    
+    def get_context_data(self, **kwargs):
+        context = super(BlogPostListView, self).get_context_data( **kwargs)
+        context['blog']= get_object_or_404(Blog, slug=self.kwargs['blog'])
+        return context
 
 class ByCategoryView(ListView):
-    template_name = 'blog/category_list.html'
+    template_name = 'blogs/category_list.html'
     context_object_name = 'entries'
 
     def get_queryset(self):
@@ -25,28 +46,36 @@ class ByCategoryView(ListView):
 
 class AllCategoryView(ListView):
     queryset = Category.objects.all()
-    template_name = 'blog/categories.html'
+    template_name = 'blogs/categories.html'
     context_object_name = 'categories'
-
+ 
 class BlogTopArchiveView(ListView):
-    queryset = Entry.live.dates('pub_date', 'year', order='DESC')
-    template_name = 'blog/entry_archive_top.html'
+    template_name = 'blogs/entry_archive_top.html'
     context_object_name = 'years'
 
+    def get_queryset(self):
+        return Entry.live.dates('pub_date', 'year', order='DESC').filter(blog__slug=self.kwargs['blog'])
+
 class BlogYearArchiveView(YearArchiveView):
-    queryset=Entry.live.all()
     date_field='pub_date'
-    template_name = 'blog/entry_archive_year.html'
+    template_name = 'blogs/entry_archive_year.html'
+
+    def get_queryset(self):
+        return Entry.live.filter(blog__slug=self.kwargs['blog'])
 
 class BlogMonthArchiveView(MonthArchiveView):
-    queryset=Entry.live.all()
     date_field='pub_date'
-    template_name = 'blog/entry_archive_month.html'
+    template_name = 'blogs/entry_archive_month.html'
+
+    def get_queryset(self):
+        return Entry.live.filter(blog__slug=self.kwargs['blog'])
 
 class BlogDetailView(DetailView):
-    queryset=Entry.live.all()
     date_filed = 'pub_date'
-    template_name = 'blog/entry_detail.html'
+    template_name = 'blogs/entry_detail.html'
+    
+    def get_queryset(self):
+        return Entry.live.filter(blog__slug=self.kwargs['blog'])
 
-def stop_errors(request):
-    return HttpResponse("Go bot!")
+        
+

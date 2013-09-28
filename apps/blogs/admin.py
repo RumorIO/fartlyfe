@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.blogs.models import Category, Entry, Blog
+from apps.blogs.models import Category, Entry, Blog, TopEntry
 from tinymce.models import HTMLField
 from tinymce.widgets import TinyMCE
 
@@ -20,6 +20,11 @@ class EntryAdmin(admin.ModelAdmin):
     def queryset(self, request):
         return Entry.objects.all()
 
+class TopEntryAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Entry, EntryAdmin)
+admin.site.register(TopEntry, TopEntryAdmin)
+

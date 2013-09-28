@@ -4,6 +4,8 @@ import os
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from tinymce.models import HTMLField
 
@@ -16,10 +18,12 @@ class Podcast(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, editable=False)
     #Synopsis of this place
+    subtitle = models.CharField(max_length=250, editable=False)
     description = HTMLField()
     #What skill did I use here?
     logo = models.ImageField(upload_to=content_file_name, blank=True)
     itunes_link = models.URLField(blank=True)
+    authors = models.ManyToManyField(User)
 
     class Meta:
         ordering = ['title']
@@ -29,7 +33,8 @@ class Podcast(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return '/podcast/' + self.slug + '/'
+        return ("episode_list", (), { 
+                    "title" : self.slug,})
 
     def save(self, force_insert=False, force_update=False):
         self.slug = slugify(self.title)
@@ -42,6 +47,8 @@ class Episode(models.Model):
     slug = models.SlugField(max_length=250, editable=False)
     #Description of the item
     description = HTMLField()
+    pub_date = models.DateTimeField(default=datetime.datetime.now)
+    posted = models.DateTimeField(default=datetime.datetime.now, editable=False)
     #Where is this from
     podcast = models.ForeignKey(Podcast)
     #Where people can see done
@@ -57,9 +64,9 @@ class Episode(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('episode_detail', (), { 
-                    'podcast' : self.podcast.slug,
-                    'slug' : self.slug,})
+        return ("episode_detail", (), { 
+                    "title" : self.podcast.slug,
+                    "slug" : self.slug,})
 
     def save(self, force_insert=False, force_update=False):
         self.slug = slugify(self.title)
