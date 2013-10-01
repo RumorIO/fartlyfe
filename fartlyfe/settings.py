@@ -133,6 +133,9 @@ INSTALLED_APPS = (
     'south',
     'photologue',
     'tagging',
+    'filer',
+    'easy_thumbnails',
+    'calendarium',
 
     #Original
     'apps.blogs',
