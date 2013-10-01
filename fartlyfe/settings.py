@@ -99,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -175,6 +176,10 @@ LOGGING = {
 
 TINYMCE_DEFAULT_CONFIG = {
     'theme' : "advanced",
+    'relative_urls' : False,
+    'remove_script_host' : False,
+    'convert_urls' : False,
+    'document_base_url' : "http://www.fartlyfe.com/",
 }
 
 from fartlyfe.local_settings import *
