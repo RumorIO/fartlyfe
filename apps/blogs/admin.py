@@ -16,10 +16,36 @@ class EntryAdmin(admin.ModelAdmin):
             mce_attrs={'width':"560px"}
             )}
     }
+    list_filter = ('status',)
 
     def queryset(self, request):
-        return Entry.objects.all()
+        qs = Entry.objects.all()
+        if request.user.has_perm('blogs.can_publish_entry'):
+            return qs
+        return qs.filter(blog__authors=request.user)
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'blog':
+            if not request.user.has_perm('blogs.can_publish_entry'):
+                kwargs['queryset'] = Blog.objects.filter(authors=request.user)
+        return super(EntryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_choice_field(self, db_field, request, **kwargs):
+        if db_field.name == 'status':
+            LIVE_STATUS = 1
+            SUBMITTED_STATUS = 2
+            DRAFT_STATUS = 3
+            if request.user.has_perm('blogs.can_publish_entry'):
+                kwargs['choices'] = (
+                        (LIVE_STATUS, 'Live'),
+                        (SUBMITTED_STATUS, 'Submitted'),
+                        (DRAFT_STATUS, 'Draft'),)
+            else:
+                kwargs['choices'] = (
+                        (SUBMITTED_STATUS, 'Submitted'),
+                        (DRAFT_STATUS, 'Draft'),)
+        return super(EntryAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
+                
 class TopEntryAdmin(admin.ModelAdmin):
     pass
 

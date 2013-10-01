@@ -65,9 +65,11 @@ class LiveEntryManager(models.Manager):
 
 class Entry(models.Model):
     LIVE_STATUS = 1
-    DRAFT_STATUS = 2
+    SUBMITTED_STATUS = 2
+    DRAFT_STATUS = 3
     STATUS_CHOICES = (
         (LIVE_STATUS, 'Live'),
+        (SUBMITTED_STATUS, 'Submitted'),
         (DRAFT_STATUS, 'Draft'),)
 
     
@@ -87,15 +89,16 @@ class Entry(models.Model):
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
     tags = TagField(help_text="Seperate with commas. Put mutli-word tags in quotes.", verbose_name='tags')
 
+    class Meta:
+        verbose_name_plural = "Entries"
+        ordering = ['-pub_date']
+        permissions = (('can_publish_entry', 'Can publish entry'),)
+    
     def save(self):
         self.slug = slugify(self.title)
         if len(self.slug) > 50:
             self.slug = self.slug[:49]
         super(Entry, self).save()
-
-    class Meta:
-        verbose_name_plural = "Entries"
-        ordering = ['-pub_date']
 
     def __unicode__(self):
         return unicode(self.title)
