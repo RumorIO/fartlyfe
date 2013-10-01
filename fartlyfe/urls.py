@@ -31,6 +31,6 @@ urlpatterns = patterns('',
     url(r'^feeds/podcast/(?P<slug>[-\w]+)/rss.xml$', RssPodcastFeed(), name="podcast-rss"),
     url(r'^feeds/podcast/(?P<slug>[-\w]+)/atom.xml$', AtomPodcastFeed(), name="podcast-atom"),
     url(r'^feeds/podcasts/(?P<slug>[-\w]+)/podcast.xml$', iTunesPodcastsFeed(), name="podcast-itunes"),
-    #url(r'^(?P<url>.*/)$', include('django.contrib.flatpages.urls')),
+    url(r'^(?P<url>.*/)$', include('django.contrib.flatpages.urls')),
 
 )
