@@ -19,6 +19,7 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ['title']
+        permissions = (('can_edit_own_blog', 'Can edit own blog'),)
 
     def save(self):
         self.slug = slugify(self.title)

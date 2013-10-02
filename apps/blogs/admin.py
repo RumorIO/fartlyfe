@@ -4,7 +4,19 @@ from tinymce.models import HTMLField
 from tinymce.widgets import TinyMCE
 
 class BlogAdmin(admin.ModelAdmin):
-    pass
+
+    def get_form(self, request, obj=None, **kwargs):
+        self.exclude = []
+        if not request.user.is_superuser:
+            self.exclude.append('authors')
+        return super(BlogAdmin, self).get_form(request, obj, **kwargs) 
+
+    def queryset(self, request):
+        qs = Blog.objects.all()
+        if request.user.has_perm('blogs.can_add_blog'):
+            return qs
+        return qs.filter(authors=request.user)
+
 
 class CategoryAdmin(admin.ModelAdmin):
     pass
