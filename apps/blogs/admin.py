@@ -9,6 +9,7 @@ class BlogAdmin(admin.ModelAdmin):
         self.exclude = []
         if not request.user.is_superuser:
             self.exclude.append('authors')
+            self.exclude.append('public')
         return super(BlogAdmin, self).get_form(request, obj, **kwargs) 
 
     def queryset(self, request):
@@ -38,7 +39,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'blog':
-            if not request.user.has_perm('blogs.can_publish_entry'):
+            if not request.user.has_perm('blogs.can_add_blog'):
                 kwargs['queryset'] = Blog.objects.filter(authors=request.user)
         return super(EntryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 

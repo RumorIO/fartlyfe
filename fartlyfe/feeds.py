@@ -82,7 +82,8 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement(u"link", self.feed["link"])
         handler.endElement(u"image") 
         handler.addQuickElement(u'itunes:category', attrs={'text':'Arts'})
-         
+        handler.addQuickElement(u'itunes:explicit', attrs={'text':'no'})
+
     def add_item_elements(self,  handler, item):
         super(iTunesPodcastsFeedGenerator, self).add_item_elements(handler, item)
         handler.addQuickElement(u'itunes:summary', item['summary'])

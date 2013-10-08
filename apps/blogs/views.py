@@ -15,7 +15,7 @@ class BlogListView(ListView):
     template_name = 'top_list.html'
     context_object_name = 'items'
     paginate_by = 10
-    queryset = Blog.objects.all()
+    queryset = Blog.live.all()
     
     def get_context_data(self, **kwargs):
         context = super(BlogListView, self).get_context_data( **kwargs)
