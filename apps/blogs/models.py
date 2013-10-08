@@ -9,14 +9,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
-class LiveBlogManager(models.Manager):
-    def get_query_set(self):
-        return super(LiveBlogManager,self).get_query_set().filter(public=True)
 
 class Blog(models.Model):
-    
-    live = LiveBlogManager()
-    objects = models.Manager()
     
     title = models.CharField(max_length=250, help_text='Maximum 250 characters.')
     slug = models.SlugField(unique=True, help_text="Automatically comes from title. Must be unique.", blank=True, editable=False)
@@ -97,11 +91,12 @@ class Entry(models.Model):
     cover = models.ForeignKey(Photo)
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
     tags = TagField(help_text="Seperate with commas. Put mutli-word tags in quotes.", verbose_name='tags')
+    on_front = models.BooleanField()
 
     class Meta:
         verbose_name_plural = "Entries"
         ordering = ['-pub_date']
-        permissions = (('can_publish_entry', 'Can publish entry'),)
+        permissions = (('can_publish_entry', 'Can publish entry'), ('can_publish_front', 'Can post on front page'))
     
     def save(self):
         self.slug = slugify(self.title)

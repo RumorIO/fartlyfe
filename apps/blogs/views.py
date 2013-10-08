@@ -9,13 +9,13 @@ class FrontPageView(ArchiveIndexView):
     context_object_name = 'latest'
     date_field = 'pub_date'
     paginate_by = 4
-    queryset = Entry.live.filter(blog__slug="fart-lyfe")
+    queryset = Entry.live.filter(on_front=True)
 
 class BlogListView(ListView):
     template_name = 'top_list.html'
     context_object_name = 'items'
     paginate_by = 10
-    queryset = Blog.live.all()
+    queryset = Blog.objects.filter(public=True)
     
     def get_context_data(self, **kwargs):
         context = super(BlogListView, self).get_context_data( **kwargs)

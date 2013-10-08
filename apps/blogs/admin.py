@@ -7,14 +7,14 @@ class BlogAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         self.exclude = []
-        if not request.user.is_superuser:
+        if not request.user.has_perm('blogs.add_blog'):
             self.exclude.append('authors')
             self.exclude.append('public')
         return super(BlogAdmin, self).get_form(request, obj, **kwargs) 
 
     def queryset(self, request):
         qs = Blog.objects.all()
-        if request.user.has_perm('blogs.can_add_blog'):
+        if request.user.has_perm('blogs.add_blog'):
             return qs
         return qs.filter(authors=request.user)
 
@@ -31,16 +31,25 @@ class EntryAdmin(admin.ModelAdmin):
     }
     list_filter = ('status',)
 
+    def get_form(self, request, obj=None, **kwargs):
+        self.exclude = []
+        if not request.user.has_perm('blogs.add_blog'):
+            self.exclude.append('on_front')
+        return super(EntryAdmin, self).get_form(request, obj, **kwargs) 
+    
     def queryset(self, request):
         qs = Entry.objects.all()
-        if request.user.has_perm('blogs.can_publish_entry'):
+        if request.user.has_perm('blogs.add_blog'):
             return qs
         return qs.filter(blog__authors=request.user)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'blog':
-            if not request.user.has_perm('blogs.can_add_blog'):
-                kwargs['queryset'] = Blog.objects.filter(authors=request.user)
+            qs = Blog.objects.all()
+            if request.user.has_perm('blogs.add_blog'):
+                kwargs['queryset'] = qs
+            else:
+                kwargs['queryset'] = qs.filter(authors=request.user)
         return super(EntryAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def formfield_for_choice_field(self, db_field, request, **kwargs):
@@ -48,10 +57,9 @@ class EntryAdmin(admin.ModelAdmin):
             LIVE_STATUS = 1
             SUBMITTED_STATUS = 2
             DRAFT_STATUS = 3
-            if request.user.has_perm('blogs.can_publish_entry'):
+            if request.user.has_perm('blogs.add_entry'):
                 kwargs['choices'] = (
                         (LIVE_STATUS, 'Live'),
-                        (SUBMITTED_STATUS, 'Submitted'),
                         (DRAFT_STATUS, 'Draft'),)
             else:
                 kwargs['choices'] = (
