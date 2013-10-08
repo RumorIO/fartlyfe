@@ -92,6 +92,7 @@ class Entry(models.Model):
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
     tags = TagField(help_text="Seperate with commas. Put mutli-word tags in quotes.", verbose_name='tags')
     on_front = models.BooleanField()
+    featured = models.BooleanField()
 
     class Meta:
         verbose_name_plural = "Entries"

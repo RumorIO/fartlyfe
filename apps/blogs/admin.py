@@ -35,6 +35,7 @@ class EntryAdmin(admin.ModelAdmin):
         self.exclude = []
         if not request.user.has_perm('blogs.add_blog'):
             self.exclude.append('on_front')
+            self.exclude.append('featured')
         return super(EntryAdmin, self).get_form(request, obj, **kwargs) 
     
     def queryset(self, request):

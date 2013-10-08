@@ -15,7 +15,7 @@ def do_featured_entries(parser, token):
 class FeaturedEntriesNode(template.Node):
 
     def render(self, context):
-        featured_entries = TopEntry.objects.filter(front_status__gt=1)
+        featured_entries = Entry.live.filter(featured=True)
         return render_to_string('blogs/featured_entries.html', { 'entries': featured_entries })
 
 def do_recent_entries(parser, token):
