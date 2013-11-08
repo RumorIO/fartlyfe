@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+        {% block social_data %}
+        <meta property="og:url" content="{{ podcast.get_absolute_url }}" />
+        <meta property="og:type" content="podcast" />
+        <meta property="og:title" content="{{ podcast.title }}" />
+        <meta property="og:description" content="{{ podcast.description }}" />
+        <meta property="og:image" content="http://www.fartlyfe.com/media/images/logos/share-logo.png" />
+        {% endblock %}
+
+{% block title %} {{ podcast.title }}{% endblock %}
+
+{% block content %}
+<div id="head-line" class="episode-title">
+    <a href="/podcasts/">podcasts</a> » <a href="{{ podcast.get_absolute_url }}">{{ podcast.title }}</a>
+    {% for episode in episodes %}<div class="entry">
+            <div class="head-line"><a href="{{ episode.get_absolute_url }}">{{ episode.pub_date|date:"m/d" }} - {{ episode.title }}</a></div>
+                <div class="entry-main">
+                    <div class="entry-body">
+                        {{ episode.body|safe }}
+                    </div>
+                    <div class="podcast-player">
+                        <audio controls>
+                            <source src="{{ episode.file.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="episode-body">
+                        {{ episode.description|safe }}
+                    </div>
+                    <div id="tags"><a href="/blogs/tags/">Tag{{ episode.tags|pluralize }}</a> : {% for tag in episode.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
+                    <div id="page-link"><a href="{{ episode.get_absolute_url }}#disqus_thread">Comment</a></div>
+                </div>
+            </div>{% endfor %}
+{% endblock %}

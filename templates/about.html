@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ flatpage.title }}{% endblock %}
+
+{% block content %}
+        <div class="entry">
+            <div class="head-line">we are about fart lyfe</div>
+            <div class="entry-main">
+                <div class="entry-body">
+                    {{ flatpage.content|safe }}
+                </div>
+            </div>
+        </div>
+{% endblock %}

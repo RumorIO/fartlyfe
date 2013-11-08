@@ -1,0 +1,55 @@
+{% extends 'calendar/base.html' %}
+
+ 
+{% block calendar %}
+        <h1>{{ date|date:"F Y" }}</h1>
+        <div id="calendar-top">
+            <div id="categories">
+                <ul>
+                    <li>{% if not current_category %}<strong>{% endif %}<a href=".">All events</a>{% if not current_category %}</strong>{% endif %}</li>
+                    {% for category in categories %}
+                    <li> • {% if category == current_category %}<strong>{% endif %}<a href=".?category={{ category.pk }}">{{ category.name }}</a>{% if category == current_category %}</strong>{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <form action="." method="post">{% csrf_token %}
+                <input type="submit" name="previous" value="previous" />
+                <input type="submit" name="next" value="next" />
+                <input type="submit" name="today" value="today" />
+                <a href="{% url "calendar_event_create" %}">create new event</a>
+            </form> 
+        </div>
+        <div id="month-calendar">
+            <div id="month-header">
+                <div class="calendar-headers month-day left-column"></div>
+                <div class="calendar-headers month-day">sunday</div>
+                <div class="calendar-headers month-day">monday</div>
+                <div class="calendar-headers month-day">tuesday</div>
+                <div class="calendar-headers month-day">wednesday</div>
+                <div class="calendar-headers month-day">thursday</div>
+                <div class="calendar-headers month-day">friday</div>
+                <div class="calendar-headers month-day">saturday</div>
+            </div>
+            {% load local_calendar_tags %}
+            {% for week in month %}
+            {% if week %}
+            <div class="month-week">
+                <div class="month-day left-column"><a href="{{ date|get_week_URL:week.0.0 }}">see all week</a></div>
+                {% for day, occurrences, current in week %}
+                    <div class="month-day">
+                    {% if day != 0 %}
+                        {% if current %}<strong>{% endif %}<a href="{% url "calendar_day" year=date|date:"Y" month=date|date:"m" day=day %}">{{ day }}</a>{% if current %}</strong>{% endif  %}
+                        {% for occurrence in occurrences %}
+                            <p><a href="{{ occurrence.get_absolute_url }}">{{ occurrence.start|date:'P' }}»</br> {{ occurrence }}</a></p>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+
+{% endblock %}
+ 

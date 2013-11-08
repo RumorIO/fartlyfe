@@ -1,0 +1,23 @@
+{% extends "calendar/base.html" %}
+
+{% block header_links%}
+        <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <script src="{{ STATIC_URL }}js/bootstrap.js"></script>
+        {{ form.media }}
+{% endblock %}
+
+
+{% block main %}
+    <div id="event-form">
+        <form action="" method="post">{% csrf_token %}
+        {% for field in form %}
+            <li class="fieldWrapper">
+            {{ field.label_tag }}
+            {{ field.errors }}
+            {{ field }}
+            </li>
+            {% endfor %} 
+            <input type="submit" value="create" />
+        </form>
+    </div>
+{% endblock %}

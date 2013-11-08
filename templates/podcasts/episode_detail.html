@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+        {% block social_data %}
+        <meta property="og:url" content="{{ episode.get_absolute_url }}" />
+        <meta property="og:type" content="podcast episode" />
+        <meta property="og:title" content="{{ episode.title }}" />
+        <meta property="og:description" content="{{ episode.description }}" />
+        <meta property="og:image" content="http://www.fartlyfe.com/media/images/logos/share-logo.png" />
+        {% endblock %}
+
+{% block title %} {{ episode.title }}{% endblock %}
+
+{% block content %}
+        <div class="entry">
+            <div class="head-line">{{ episode.pub_date|date:"m/d" }} - {{ episode.title }}</div>
+                <div class="entry-main">
+                    <div class="podcast-player">
+                        <audio controls>
+                            <source src="{{ episode.file.url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="episode-body">
+                        {{ episode.description|safe }}
+                    </div>
+                    {% if episode.gallery %}<div id="gallery">
+                        {% for photo in episode.gallery.photos.all %}
+                        <div class="gallery-photo">
+                            <img src="{{ photo.image.url }}">
+                            {% if photo.caption %}
+                            <div class="photo-caption">
+                                {{ photo.caption }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>{% endif %}
+                    <div id="tags"><a href="/blogs/tags/">Tag{{ episode.tags|pluralize }}</a> : {% for tag in episode.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
+                <!-- AddThis Button BEGIN -->
+                <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                <a class="addthis_button_preferred_1"></a>
+                <a class="addthis_button_preferred_2"></a>
+                <a class="addthis_button_preferred_3"></a>
+                <a class="addthis_button_preferred_4"></a>
+                <a class="addthis_button_compact"></a>
+                <a class="addthis_counter addthis_bubble_style"></a>
+                </div>
+                <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+                <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5245ee0433860573"></script>
+                <!-- AddThis Button END -->
+                <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        var disqus_shortname = 'fartlyfe';
+                        (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript';dsq.async = true;
+                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                            
+                </div>
+            </div>
+        </div>
+{% endblock %}

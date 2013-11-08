@@ -1,0 +1,35 @@
+{% extends 'calendar/base.html' %}
+
+{% block main %}
+    <div id="event-info">
+        <div id="event-left">
+            <div id="event-date"><a href="{% url 'calendar_day' year=object.start|date:"Y" month=object.start|date:"m" day=object.start|date:"d" %}">{{ object.start|date:"l M j, Y" }} »</a></div>
+            <div id="event-title"{% if object.localevent.fartlyfe_offical %} class="official-event">LEGIT FART LYFE SHIT- {% else %}>{% endif %}{{ object.title }}</div>
+            <div id="event-time">{{ object.start|date:"P" }}</div>
+            <div id="event-age-limit">{{ object.localevent.get_age_limit_display }}</div>
+            <div id="event-price">{% if object.localevent.price %}${{ object.localevent.price }}{% else %}Free{% endif %}</div>
+            <div id="event-description">{{ object.description|safe }}</div>
+            <div id="event-category">{% if object.category %}{{ object.category }}{% else %}no category{% endif %}</div>
+            <a href="javascript:history.back();">back</a>
+        </div>
+        <div id="event-right">
+            {% if object.localevent.location %}
+            <div id="event-location">
+                <div id="location-title">{{ object.localevent.location.name }}</div>
+                <div id="location-website"><a href="{{ object.localevent.location.website }}">website</a></div>
+                <div id="location-number">{{ object.localevent.location.phone_number }}</div>
+                <div id="location-address">
+                {% for piece in object.localevent.location.get_full_address %}
+                    <p>{{ piece }}</p>
+                {% endfor %}
+                </div>
+                <div id="location-map" class="map-canvas">
+                    {% load show_info %}
+                    {{ object.localevent.location|json_info|safe }}
+                </div>
+            </div>{% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
