@@ -52,9 +52,9 @@ class Feed(models.Model):
     @models.permalink
     def get_absolute_url(self):
         if self.is_video_podcast or self.is_audio_podcast:
-            return ('podcast_detail', (), {'slug': self.slug })
+            return ('episode_list', (), {'slug': self.slug })
         else:
-            return ('blog_detail', (), {'slug': self.slug })
+            return ('blog_post_list', (), {'slug': self.slug })
 
     def live_entry_set(self):
         from apps.feeds.models import Post
@@ -129,7 +129,7 @@ class Post(models.Model):
     explicit = models.BooleanField()
     description = models.CharField(max_length=250, blank=True)
     mimetype = models.CharField(max_length=250, blank=True, editable=False)
-    duration = models.IntegerField(editable=False)
+    duration = models.CharField(max_length=250, blank=True, editable=False)
     block = models.BooleanField()
 
     class Meta:
@@ -167,7 +167,14 @@ class Post(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('post_detail', (), { 'feed': self.feed.slug,
+        if self.feed.is_audio_podcast or self.feed.is_video_podcast:
+            return ('episode_detail', (), {'feed': self.feed.slug,
+                                        'year': self.pub_date.strftime("%Y"),
+                                        'month': self.pub_date.strftime("%b").lower(),
+                                        'day': self.pub_date.strftime("%d"),
+                                        'slug': self.slug })
+        else:
+            return ('post_detail', (), { 'feed': self.feed.slug,
                                         'year': self.pub_date.strftime("%Y"),
                                         'month': self.pub_date.strftime("%b").lower(),
                                         'day': self.pub_date.strftime("%d"),
