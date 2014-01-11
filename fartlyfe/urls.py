@@ -1,6 +1,5 @@
 import photologue
 from tastypie.api import Api
-from oscar.app import application
 
 from apps.feeds.views import FrontPageView
 from fartlyfe.api.resources import EventResource, BlogResource
@@ -34,17 +33,15 @@ urlpatterns = patterns('',
     url(r'^blogs/', include('apps.feeds.urls.blogs')),
     url(r'^podcasts/', include('apps.feeds.urls.podcasts')),
     url(r'^calendar/', include('apps.local_calendar.urls')),
-    url(r'^shop/checkout/paypal/', include('paypal.express.urls')),
-    url(r'^shop/', include(application.urls)),
-    url(r'^newshop/', include('shop.urls')),
+    url(r'^shop/', include('shop.urls')),
     
     url(r'^topic/', include('apps.feeds.urls.topics')),
     url(r'^tags/', include('apps.feeds.urls.tags')), 
     url(r'^search/$', include('apps.search.urls')),
     url(r'^api/', include(fartlyfe_v1.urls)),
     
-    url(r'^feeds/blog/(?P<slug>[-\w]+)/rss.xml$', RssBlogFeed(), name="blog-rss"),
-    url(r'^feeds/blog/(?P<slug>[-\w]+)/atom.xml$', AtomBlogFeed(), name="blog-atom"),
+    url(r'^feeds/all/(?P<slug>[-\w]+)/rss.xml$', RssBlogFeed(), name="feed-rss"),
+    url(r'^feeds/all/(?P<slug>[-\w]+)/atom.xml$', AtomBlogFeed(), name="feed-atom"),
     url(r'^feeds/podcast/(?P<slug>[-\w]+)/rss.xml$', RssPodcastFeed(), name="podcast-rss"),
     url(r'^feeds/podcast/(?P<slug>[-\w]+)/atom.xml$', AtomPodcastFeed(), name="podcast-atom"),
     url(r'^feeds/podcasts/(?P<slug>[-\w]+)/podcast.xml$', iTunesPodcastsFeed(), name="podcast-itunes"),
