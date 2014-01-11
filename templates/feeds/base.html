@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'site_base.html' %}
 {% load base_info %}
 
 {% block header_extension %}
@@ -12,9 +12,9 @@
                         <div id="twitter"><a href="http://www.twitter.com/FartLyfe"><img src="/media/images/logos/twitter.png" alt='Twitter'></a></div>
                     </div>
                     <div class="recent-list">
-                        <div class="head-line">recent posts</div>
+                        <div class="head-line">recent blogs</div>
                         <div class="recent-box box">
-                            {% show_recent posts %}
+                            {% show_recent blogs %}
                         </div>
                     </div>
                     <div class="recent-list">
