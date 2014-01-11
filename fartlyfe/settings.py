@@ -1,4 +1,6 @@
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+from oscar import get_core_apps
+
 
 # Django settings for fartlyfe project.
 
@@ -91,6 +93,11 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
+    'oscar.apps.search.context_processors.search_form',
+    'oscar.apps.promotions.context_processors.promotions',
+    'oscar.apps.checkout.context_processors.checkout',
+    'oscar.apps.customer.notifications.context_processors.notifications',
+    'oscar.core.context_processors.metadata', 
     )
 
 MIDDLEWARE_CLASSES = (
@@ -100,8 +107,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'oscar.apps.basket.middleware.BasketMiddleware',
 )
 
 ROOT_URLCONF = 'fartlyfe.urls'
@@ -115,7 +124,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = tuple([
     #Django apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -134,14 +143,29 @@ INSTALLED_APPS = (
     'photologue',
     'tagging',
     'filer',
+    'mptt',
     'easy_thumbnails',
     'calendarium',
+    'tastypie',
+    'datetimewidget',
+    'compressor',
+    'paypal',
+    'endless_pagination',
+    'shop',
+    'shop.addressmodel',
+    'shop_simplecategories',
+    'paypal.standard.ipn',
+    'shop_paypal',
+    'debug_toolbar',
+    'bootstrap3',
 
     #Original
-    'apps.blogs',
-    'apps.podcasts',
+    'apps.feeds',
+    'apps.local_calendar',
+    'apps.search',
+    'apps.this_shop',
     'fartlyfe',
-)
+] + get_core_apps(['apps.shipping',]))
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
@@ -182,5 +206,33 @@ TINYMCE_DEFAULT_CONFIG = {
     'document_base_url' : "http://www.fartlyfe.com/",
 }
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+
+from oscar.defaults import *
 from fartlyfe.local_settings import *
+
+OSCAR_DEFAULT_CURRENCY = 'USD'
+OSCAR_CURRENCY_LOCALE = 'en_US'
+
+from django.utils.translation import ugettext_lazy as _
+OSCAR_DASHBOARD_NAVIGATION.append(
+    {
+        'label': _('PayPal'),
+        'icon': 'icon-globe',
+        'children': [
+            {
+                'label': _('Express transactions'),
+                'url_name': 'paypal-express-list',
+            },
+        ]
+    })
+
+PAYPAL_CURRENCY = OSCAR_DEFAULT_CURRENCY
+PAYPAL_SANDBOX_MODE = True
+
+
 

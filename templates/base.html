@@ -3,9 +3,13 @@
       xmlns:fb="https://www.facebook.com/2008/fbml">
     <head>
         <title>Fart Lyfe »{% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load bootstrap3 %}
+        {% bootstrap_css %}
+        {% load staticfiles %}
         <link href="/static/css/main.css" rel="stylesheet" type="text/css">
         <link href='http://fonts.googleapis.com/css?family=Asul' rel='stylesheet' type='text/css'>
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        {% block header_links %}{% endblock %}
         {% block social_data %}
         <meta property="og:url" content="http://www.fartlyfe.com" />
         <meta property="og:type" content="website" />
@@ -15,66 +19,30 @@
         {% endblock %}
     </head>
     <body>
-        <div id="page">
-            <div id="header">
-                <div id="logo">
-                    <a href="/"><img src="/media/images/logos/logo.png" alt="Fart Lyfe"></a>
+        <div class="viewport">
+            <div class="frame">
+                {% block menu %}{% endblock %}
+                <div class="view">
+                    {% block menu_button %}{% endblock %}
+                    <div class="container">
+                        <header>
+                            <div id="logo">
+                                <a href="/"><img class="col-xs-12" src="/media/images/logos/logo.png" alt="Fart Lyfe"></a>
+                            </div>
+                            {% block header_extension %}{% endblock %}
+                        </header>
+                        <div id="content">
+                            {% block main %}{% endblock %}
+                        </div>
+                    </div>
                 </div>
-                <div id="navbar">
-                    <ul>
-                        <li>
-                            <a href="/blogs/">
-                                <div id="header-blogs" class="mask-button{% if 'blog' in request.path %} active{% endif %}">
-                                    <p>Blogs</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/podcasts/">
-                                <div id="header-podcasts" class="mask-button{% if 'podcast' in request.path %} active{% endif %}">
-                                    <p>Podcasts</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/calendar/">
-                                <div id="header-calendar" class="mask-button{% if 'calendar' in request.path %} active{% endif %}">
-                                    <p>Calendar</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/shop/">
-                                <div id="header-shop" class="mask-button{% if 'shop' in request.path %} active{% endif %}">
-                                    <p>Shop</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/contact/">
-                                <div id="header-contact" class="mask-button{% if 'contact' in request.path %} active{% endif %}">
-                                    <p>Contact</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/about/">
-                                <div id="header-about" class="mask-button{% if 'about' in request.path %} active{% endif %}">
-                                    <p>About Us</p>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                {% block header_extension %}{% endblock %}
-            </div>
-            <div id="content">
-                {% block main %}{% endblock %}
-            </div>
-            <div id="footer">
-                <p>copyright 2013 Fart Lyfe</p>
             </div>
         </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        {% bootstrap_javascript %}
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate({paginateOnScroll: true});</script>
+        {% block bottom_js %}
         <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'fartlyfe'; // required: replace example with your forum shortname
@@ -87,6 +55,9 @@
            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
         </script> 
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        {% endblock %}
+
     </body>
 </html>
 

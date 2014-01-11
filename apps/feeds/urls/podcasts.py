@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 from django.views.generic import ListView, DetailView
 
 from apps.feeds.views import PodcastListView, PostListView, PostDetailView

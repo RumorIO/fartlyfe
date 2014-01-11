@@ -1,10 +1,12 @@
 from django.contrib import admin
-from apps.blogs.models import Category, Entry, Blog, TopEntry
+from apps.blogs.models import Category, Entry, Blog
 from tinymce.models import HTMLField
 from tinymce.widgets import TinyMCE
 
 class BlogAdmin(admin.ModelAdmin):
 
+    #prepopulated_fields = {"slug": ("title",)}
+    
     def get_form(self, request, obj=None, **kwargs):
         self.exclude = []
         if not request.user.has_perm('blogs.add_blog'):
@@ -20,15 +22,20 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    pass
+    #prepopulated_fields = {"slug": ("title",)}
+    pass    
 
 class EntryAdmin(admin.ModelAdmin):
+    
+    #prepopulated_fields = {"slug": ("title",)}
+    
     formfield_overrides = {
         HTMLField: {'widget': TinyMCE(
             attrs={'cols':50, 'rows':30},
             mce_attrs={'width':"560px"}
             )}
     }
+    
     list_filter = ('status',)
 
     def get_form(self, request, obj=None, **kwargs):
@@ -68,11 +75,7 @@ class EntryAdmin(admin.ModelAdmin):
                         (DRAFT_STATUS, 'Draft'),)
         return super(EntryAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
                 
-class TopEntryAdmin(admin.ModelAdmin):
-    pass
-
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Entry, EntryAdmin)
-admin.site.register(TopEntry, TopEntryAdmin)
 

@@ -15,6 +15,7 @@ class FrontPageView(AjaxListView):
     model = Post
     template_name = 'feeds/post_archive.html'
     page_template = 'feeds/post_archive_page.html'
+    paginate_by = 3
     queryset = Post.live.filter(on_front=True).order_by('-pub_date')
 
 

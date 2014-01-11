@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block menu %}
+                <div id="menu" class="menu nav-collapse collapse width">
+                    <div class="collapse-inner">
+                        <div class="navbar navbar-inverse">
+                            <div class="navbar-inner">
+                                FART LYFE
+                            </div>
+                        </div>
+                        <ul>
+                            <li id="header-feeds" class="{% if 'blog' in request.path %}active{% endif %}">
+                                <a href="{% url 'feeds_all' %}">
+                                    <p>Read</p>
+                                </a>
+                            </li>
+                            <li id="header-read" class="{% if 'blog' in request.path %}active{% endif %}">
+                                <a href="{% url 'feeds_read' %}">
+                                    <p>Read</p>
+                                </a>
+                            </li>
+                            <li id="header-listen" class="{% if 'podcast' in request.path %}active{% endif %}">
+                                <a href="{% url 'feeds_listen' %}">
+                                        <p>Listen</p>
+                                </a>
+                            </li>
+                            <li id="header-watch" class="{% if 'watch' in request.path %}active{% endif %}">
+                                <a href="{% url 'feeds_watch' %}">
+                                        <p>Watch</p>
+                                </a>
+                            </li>
+                            <li id="header-calendar" class="{% if 'calendar' in request.path %}active{% endif %}">
+                                <a href="{% url 'calendar_main' %}">
+                                    <p>Calendar</p>
+                                </a>
+                            </li>
+                            <li id="header-shop" class="{% if 'shop' in request.path %}active{% endif %}">
+                                <a href="/shop/">
+                                    <p>Shop</p>
+                                </a>
+                            </li>
+                            <li id="header-about" class="{% if 'about' in request.path %}active{% endif %}">
+                                <a href="/about/">
+                                    <p>About</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+{% endblock %}
+
+{% block menu_button %}
+                <div class="navbar navbar-inverse">
+                    <div class="navbar-inner">
+                        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#menu">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                </div>
+{% endblock %}
+
+{% block header_extension %}{% endblock %}
+
+{% block main %}{% endblock %}
+

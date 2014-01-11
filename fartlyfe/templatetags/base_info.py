@@ -1,50 +1,48 @@
 from django import template
+from django.db.models import Count, Q
 from django.template.loader import render_to_string
 
 import datetime
 
-from apps.blogs.models import TopEntry, Entry
-from apps.podcasts.models import Episode
+#from apps.blogs.models import Post, Feed
+#from apps.feeds.models import Episode
 
-def do_featured_entries(parser, token):
-    bits = token.contents.split()
-    if len(bits) != 1:
-        raise template.TemplateSyntaxError("%s tag takes no arguments" % bits[0])
-    return FeaturedEntriesNode()
-
-class FeaturedEntriesNode(template.Node):
-
-    def render(self, context):
-        featured_entries = Entry.live.filter(featured=True)
-        return render_to_string('blogs/featured_entries.html', { 'entries': featured_entries })
-
-def do_recent_entries(parser, token):
-    bits = token.contents.split()
-    if len(bits) != 1:
-        raise template.TemplateSyntaxError("%s tag takes no arguments" % bits[0])
-    return RecentEntriesNode()
-
-class RecentEntriesNode(template.Node):
-
-    def render(self, context):
-        recent_entries = Entry.live.order_by('-pub_date')[:5]
-        return render_to_string('recent_list.html', { 'list': recent_entries })
-
-def do_recent_episodes(parser, token):
-    bits = token.contents.split()
-    if len(bits) != 1:
-        raise template.TemplateSyntaxError("%s tag takes no arguments" % bits[0])
-    return RecentEpisodesNode()
-
-class RecentEpisodesNode(template.Node):
-
-    def render(self, context):
-        recent_episodes = Episode.objects.filter(pub_date__lte=datetime.datetime.now()).order_by('-pub_date')[:5]
-        return render_to_string('recent_list.html', { 'list': recent_episodes })
-
+from apps.feeds.models import Feed, Post
 
 register = template.Library()
-register.tag('featured_entries', do_featured_entries)
-register.tag('recent_entries', do_recent_entries)
-register.tag('recent_episodes', do_recent_episodes)
+
+@register.tag
+def blog_header(parser, token):
+    bits = token.contents.split()
+    if len(bits) != 1:
+        raise template.TemplateSyntaxError("%s tag takes no arguments" % bits[0])
+    return FeedHeaderNode()
+
+class FeedHeaderNode(template.Node):
+
+    def render(self, context):
+        featured_posts = Post.live.filter(featured=True).order_by('-pub_date')
+        feeds = Feed.objects.filter(public=True).annotate(Count('post'))
+        return render_to_string('feeds/feed_header.html', { 'posts': featured_posts, 'feeds': feeds })
+
+@register.tag
+def show_recent(parser, token):
+    bits = token.contents.split()
+    if len(bits) != 2:
+        raise template.TemplateSyntaxError("%s tag takes 1 argument." % bits[0])
+    return RecentPostsNode(bits[1])
+
+class RecentPostsNode(template.Node):
+    
+    def __init__(self, recent_type):
+        self.recent_type = recent_type
+
+    def render(self, context):
+        recent = []
+        if self.recent_type == 'blogs':
+            recent = Post.live.filter(Q(feed__is_audio_podcast=False)|Q(feed__is_video_podcast=False)).order_by('-pub_date')[:10]
+        elif self.recent_type == 'podcasts':
+            recent = Post.live.filter(Q(feed__is_audio_podcast=True)|Q(feed__is_video_podcast=True)).order_by('-pub_date')[:10]
+        return render_to_string('recent_list.html', { 'list': recent })
+
 

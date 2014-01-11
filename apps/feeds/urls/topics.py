@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 from apps.feeds.models import Topic
 from apps.feeds.views import AllTopicView, ByTopicView
