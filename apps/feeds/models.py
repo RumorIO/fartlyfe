@@ -167,14 +167,7 @@ class Post(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if self.feed.is_audio_podcast or self.feed.is_video_podcast:
-            return ('episode_detail', (), {'feed': self.feed.slug,
-                                        'year': self.pub_date.strftime("%Y"),
-                                        'month': self.pub_date.strftime("%b").lower(),
-                                        'day': self.pub_date.strftime("%d"),
-                                        'slug': self.slug })
-        else:
-            return ('post_detail', (), { 'feed': self.feed.slug,
+        return ('post_detail', (), { 'feed': self.feed.slug,
                                         'year': self.pub_date.strftime("%Y"),
                                         'month': self.pub_date.strftime("%b").lower(),
                                         'day': self.pub_date.strftime("%d"),
