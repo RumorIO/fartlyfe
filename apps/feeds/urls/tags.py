@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, include, url
 
+from endless_pagination.views import AjaxListView
+
 from tagging.models import Tag
 
 from apps.feeds.views import TagListView, TagDetailView

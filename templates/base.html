@@ -19,21 +19,16 @@
         {% endblock %}
     </head>
     <body>
-        <div class="viewport">
-            <div class="frame">
-                {% block menu %}{% endblock %}
-                <div class="view">
-                    {% block menu_button %}{% endblock %}
-                    <div class="container">
-                        <header>
-                            <div id="logo">
-                                <a href="/"><img class="col-xs-12" src="/media/images/logos/logo.png" alt="Fart Lyfe"></a>
-                            </div>
-                            {% block header_extension %}{% endblock %}
-                        </header>
-                        <div id="content">
-                            {% block main %}{% endblock %}
-                        </div>
+        <div id="page">
+            {% block menu %}{% endblock %}
+            <div class="viewport">
+                {% block menu_button %}{% endblock %}
+                <div class="container">
+                    <header>
+                        {% block header %}{% endblock %}
+                    </header>
+                    <div id="content">
+                        {% block main %}{% endblock %}
                     </div>
                 </div>
             </div>
@@ -42,7 +37,6 @@
         {% bootstrap_javascript %}
         <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
         <script>$.endlessPaginate({paginateOnScroll: true});</script>
-        {% block bottom_js %}
         <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'fartlyfe'; // required: replace example with your forum shortname
@@ -56,8 +50,9 @@
         }());
         </script> 
         <!-- Latest compiled and minified Bootstrap JavaScript -->
+        {% block bottom_js %}
         {% endblock %}
-
+        <script src="{{ STATIC_URL }}js/fartlyfe.js"></script>
     </body>
 </html>
 

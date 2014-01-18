@@ -1,107 +1,151 @@
-.body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+@font-face
+{
+    font-family: Didot;
+    src: url(/static/fonts/didot-htf-m42-medium.otf);
 }
 
-.viewport {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  overflow-x: hidden;
-}
- 
-.viewport .frame {
-  position: absolute;
-  width: 200%;
-  top: 0;
-  bottom: 0;
-  left: 0;
+h1, h2, h3, h4, h5, .didot {
+    font-family:Didot;
+    font-weight:bolder;
+    text-shadow:0px 1px 1px rgba(0,0,0,.2);
 }
 
-.menu {
-  height:100%;
-}
- 
-.menu.collapse {
-  float:left;
-  height: 100% !important;
-  width: auto;
-}
- 
-.menu.collapse.height {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  -webkit-transition: height 0.35s ease;
-  -moz-transition: height 0.35s ease;
-  -o-transition: height 0.35s ease;
-  transition: height 0.35s ease;
-}
- 
-.menu.collapse.width {
-  position: relative;
-  width: 0;
-  overflow: hidden;
-  -webkit-transition: width 0.35s ease;
-  -moz-transition: width 0.35s ease;
-  -o-transition: width 0.35s ease;
-  transition: width 0.35s ease;
-}
- 
-.menu.collapse.in.width {
-  width: auto;
-}
- 
-.menu.collapse.in.height {
-  height: auto;
-}
- 
-.menu.collapse-inner {
-  position: relative;
-  width: 250px;
-  height: 100%;
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family:serif;
 }
 
-.view {
-  width: 50%;
-  height: auto;
-  overflow: hidden;
+header h1 {
+    font-size:40px;
+    text-align:center;
 }
 
-#header-blogs {
-    background-image:url('/media/images/logos/blogs-mask.png');
-    width:80px;
-    }
+a {
+    color:black;
+}
 
-#header-podcasts {
-    background-image:url('/media/images/logos/podcasts-mask.png');
-    width:155px; 
-    }
+a:hover {
+    color:black;
+    text-decoration:underline;
+}
 
-#header-calendar {
-    background-image:url('/media/images/logos/calendar-mask.png');
-    width:165px;
-    }
+.row {
+    margin:0px;
+}
 
-#header-shop {
-    background-image:url('/media/images/logos/shop-mask.png');
-    width:85px;
-    }
+#page-content-wrapper {
+    width: 100%;
+}
 
-#header-contact {
-    background-image:url('/media/images/logos/contact-mask.png');
-    width:158px;
-    }
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
-#header-about {
-    background-image:url('/media/images/logos/about-mask.png');
-    width:135px;
-    }
+.sidebar-nav li {
+    line-height: 40px;
+    text-indent: 20px;
+}
+
+.sidebar-nav li a {
+    color: #999999;
+    display: block;
+    text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+    text-decoration: none;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    line-height: 60px;
+    font-size: 45px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+.second-level {
+    position:relative;
+}
+
+.second-level>li>a>p {
+    margin: 0px 0px 0px 15px;
+}
+
+#social-links {
+    position:absolute;
+    bottom:8px;
+    left:8px;
+}
+
+#social-links>a>img {
+    padding: 0px 4px 0px 0px;
+}
+
+#page {
+    padding-left: 0;
+    transition: all 0.4s ease 0s;
+}
+
+#menu {
+    left: 0;
+    margin-left: -250px;
+    width: 250px;
+    background: #000;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.4s ease 0s;
+    font-size:25px;
+}
+
+#page.active {
+    position: relative;
+    left: 250px;
+    transition: all 0.4s ease 0s;
+}
+
+#page.active #menu {
+    left: 250px;
+    width: 250px;
+    transition: all 0.4s ease 0s;
+}
+
+#menu-toggle {
+    display: inline-block;
+    color:black;
+    font-size:25px;
+}
+
+.page-top {
+    padding:0px;
+    text-align:right;
+}
+
 
 audio {
     height:50px;
@@ -134,4 +178,23 @@ ul.errorlist {
 .rg-thumbs {
     display:none;
     }
+
+
+.calendar-day {
+    min-height:100px;
+}
+
+#categories ul {
+    list-style:none;
+}
+
+#event-location {
+    padding: 50px 0px 0px 0px;
+}
+
+.map-canvas {
+    height:300px;
+    color:white;
+}
+
 

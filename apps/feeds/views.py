@@ -1,8 +1,8 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.dates import YearArchiveView, MonthArchiveView, ArchiveIndexView
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from endless_pagination.views import AjaxListView
 from tagging.models import Tag
@@ -12,45 +12,77 @@ from apps.podcasts.settings import SKILL_CHOICES
 
 class FrontPageView(AjaxListView):
     """Lists the front pages featured stories"""
-    model = Post
-    template_name = 'feeds/post_archive.html'
-    page_template = 'feeds/post_archive_page.html'
-    paginate_by = 3
-    queryset = Post.live.filter(on_front=True).order_by('-pub_date')
-
-
-class BlogListView(AjaxListView):
-    """Filters out podcast feeds, to list blogs"""
     model = Feed
-    template_name = 'feeds/feed_list.html'
-    queryset = Feed.objects.filter(Q(is_audio_podcast=False),Q(is_video_podcast=False)).filter(public=True)
-
-    def get_context_data(self, **kwargs):
-        context = super(BlogListView, self).get_context_data( **kwargs)
-        context['item_type']= 'blog'
-        return context
-
-
-class PodcastListView(BlogListView):
-    """Lists only feeds tagged as podcasts"""
-    queryset = Feed.objects.filter(Q(is_audio_podcast=True)|Q(is_video_podcast=True)).filter(public=True)
+    template_name = 'feeds/front.html'
+    page_template = 'feeds/front_page.html'
+    paginate_by = 3
+    queryset = Feed.published.annotate(Max("post__pub_date")).order_by('-post__pub_date__max')
     
     def get_context_data(self, **kwargs):
-        context = super(PodcastListView, self).get_context_data( **kwargs)
-        context['item_type']= 'podcast'
+        context = super(FrontPageView, self).get_context_data( **kwargs)
+        context['cover'] = Post.live.filter(featured=True).order_by('-pub_date')[0]
+        context['featured'] = Post.live.filter(featured=True).order_by('-pub_date')[1:5]
+        context['recent_posts'] = Post.live.filter(mimetype="").order_by('-pub_date')[:4]
+        context['recent_podcasts'] = Post.live.filter(mimetype__icontains="audio").order_by('-pub_date')[:4]
         return context
 
 
-class PostListView(FrontPageView):
-    """Lists most recent public posts on a given feed"""
+class PostsByFeedView(AjaxListView):
+    model = Post
+    template_name = 'feeds/post_list.html'
+    page_template = 'feeds/post_list_page.html'
+
     def get_queryset(self):
         return Post.live.filter(feed__slug=self.kwargs['slug'])
-    
+
     def get_context_data(self, **kwargs):
-        context = super(PostListView, self).get_context_data( **kwargs)
-        context['slug']= get_object_or_404(Feed, slug=self.kwargs['slug'])
+        context = super(PostsByFeedView, self).get_context_data( **kwargs)
+        context['feed'] = Feed.published.get(slug=self.kwargs['slug'])
         return context
 
+
+class FeedTopArchiveView(TemplateView):
+    """Lists all years with posts"""
+    template_name = 'feeds/year_list.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(FeedTopArchiveView, self).get_context_data( **kwargs)
+        yearmonths = {}
+        for month in Post.live.filter(feed__slug=self.kwargs['slug']).dates('pub_date_year', 'month', order='ASC'):
+            if yearmonths.has_key(month.year):
+                if month not in yearmonths[month.year]:
+                    yearmonths[month.year].append(month)
+            else:
+                yearmonths[month.year] = [month,]
+        years_list = yearmonths.items()
+        years_list.sort()
+        context['years'] = years_list
+        context['feed'] = Feed.published.get(slug=self.kwargs['slug'])
+        return context
+
+
+class FeedYearArchiveView(AjaxListView):
+    """Lists all months in a given year that contain posts"""
+    date_field='pub_date_year'
+    template_name = 'feeds/post_archive_year.html'
+    page_template = 'feeds/post_archive_year_page.html'
+
+    def get_queryset(self):
+        return Post.live.filter(feed__slug=self.kwargs['slug'])
+
+
+class FeedMonthArchiveView(MonthArchiveView):
+    """Lists all posts in a given month"""
+    date_field = 'pub_date_year'
+    template_name = ''
+
+    def get_queryset(self):
+        return Post.live.filter(feed__slug=self.kwargs['slug'])
+ 
+    def get_context_data(self, **kwargs):
+        context = super(FeedMonthArchiveView, self).get_context_data( **kwargs)
+        context['feed'] = Feed.published.get(slug=self.kwargs['slug'])
+        return context
 
 class PostDetailView(DetailView):
     """Displays a page for any given post"""
@@ -60,8 +92,8 @@ class PostDetailView(DetailView):
     def get_queryset(self):
         return Post.live.filter(feed__slug=self.kwargs['feed'])
 
-
-class ByTopicView(AjaxListView):
+        
+class TopicDetailView(AjaxListView):
     """Displays all posts under a given topic"""
     model = Topic
     template_name = 'feeds/topic_list.html'
@@ -76,40 +108,13 @@ class ByTopicView(AjaxListView):
         return context
 
 
-class AllTopicView(AjaxListView):
+class TopicListView(AjaxListView):
     """Lists all topics"""
     model = Topic
     queryset = Topic.objects.all()
     template_name = 'feeds/categories.html'
 
 
-class FeedTopArchiveView(AjaxListView):
-    """Lists all years with posts"""
-    model = Post
-    template_name = 'feeds/post_archive_top.html'
-
-    def get_queryset(self):
-        return Post.live.dates('pub_date', 'year', order='DESC').filter(feed__slug=self.kwargs['feed'])
-
-
-class FeedYearArchiveView(YearArchiveView):
-    """Lists all months in a given year that contain posts"""
-    date_field='pub_date'
-    template_name = 'feeds/post_archive_year.html'
-
-    def get_queryset(self):
-        return Post.live.filter(feed__slug=self.kwargs['feed'])
-
-
-class FeedMonthArchiveView(MonthArchiveView):
-    """Lists all posts in a given month"""
-    date_field='pub_date'
-    template_name = 'feeds/post_archive_month.html'
-
-    def get_queryset(self):
-        return Post.live.filter(feed__slug=self.kwargs['feed'])
-
-        
 class TagDetailView(DetailView):
     """Lists all posts with given tag"""
 

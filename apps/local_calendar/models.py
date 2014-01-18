@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from localflavor.us.models import USStateField, PhoneNumberField
 
 from calendarium.models import Event, Occurrence
+from photologue.models import Photo
 
 from south.modelsinspector import add_introspection_rules 
 add_introspection_rules([], ["^localflavor\.us\.models\.USStateField"])
@@ -98,6 +99,7 @@ class LocalEvent(Event):
     age_limit = models.IntegerField(choices=AGE_LIMITS)
     price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     fartlyfe_official = models.BooleanField()
+    cover = models.ForeignKey(Photo)
 
     objects = EventModelManager()
 

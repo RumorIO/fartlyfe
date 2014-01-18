@@ -1,64 +1,72 @@
 {% extends 'base.html' %}
 
+{% block header %}{% endblock %}
+
 {% block menu %}
-                <div id="menu" class="menu nav-collapse collapse width">
-                    <div class="collapse-inner">
-                        <div class="navbar navbar-inverse">
-                            <div class="navbar-inner">
-                                FART LYFE
-                            </div>
-                        </div>
-                        <ul>
-                            <li id="header-feeds" class="{% if 'blog' in request.path %}active{% endif %}">
-                                <a href="{% url 'feeds_all' %}">
-                                    <p>Read</p>
-                                </a>
-                            </li>
-                            <li id="header-read" class="{% if 'blog' in request.path %}active{% endif %}">
-                                <a href="{% url 'feeds_read' %}">
-                                    <p>Read</p>
-                                </a>
-                            </li>
-                            <li id="header-listen" class="{% if 'podcast' in request.path %}active{% endif %}">
-                                <a href="{% url 'feeds_listen' %}">
+                <div id="menu" class="didot">
+                    <ul class="sidebar-nav" id="main-nav">
+                        <li class="sidebar-brand">
+                            <a href="{% url 'main' %}">
+                                fart lyfe
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="collapse" data-parent="main-nav" href="#feedCollapse">
+                                Feeds
+                            </a>
+                            <ul id="feedCollapse" class="sidebar-nav second-level collapse">                
+                                <li>
+                                    <a href="{% url 'all_feeds' %}">
+                                        <p>All</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'read_feeds' %}">
+                                        <p>Read</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'listen_feeds' %}">
                                         <p>Listen</p>
-                                </a>
-                            </li>
-                            <li id="header-watch" class="{% if 'watch' in request.path %}active{% endif %}">
-                                <a href="{% url 'feeds_watch' %}">
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'watch_feeds' %}">
                                         <p>Watch</p>
-                                </a>
-                            </li>
-                            <li id="header-calendar" class="{% if 'calendar' in request.path %}active{% endif %}">
-                                <a href="{% url 'calendar_main' %}">
-                                    <p>Calendar</p>
-                                </a>
-                            </li>
-                            <li id="header-shop" class="{% if 'shop' in request.path %}active{% endif %}">
-                                <a href="/shop/">
-                                    <p>Shop</p>
-                                </a>
-                            </li>
-                            <li id="header-about" class="{% if 'about' in request.path %}active{% endif %}">
-                                <a href="/about/">
-                                    <p>About</p>
-                                </a>
-                            </li>
-                        </ul>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'calendar_main' %}">
+                                <p>Calendar</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'shop_main' %}">
+                                <p>Shop</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/about/">
+                                <p>About</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="social-links">
+                        <a href="https://www.facebook.com/pages/fART-LyFE/521634897916745">
+                            <img src="/media/images/logos/facebook.png" alt='Facebook'>
+                        </a>
+                        <a href="http://www.twitter.com/FartLyfe">
+                            <img src="/media/images/logos/twitter.png" alt='Twitter'>
+                        </a>
                     </div>
                 </div>
 {% endblock %}
 
 {% block menu_button %}
-                <div class="navbar navbar-inverse">
-                    <div class="navbar-inner">
-                        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#menu">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                    </div>
-                </div>
+                    <a id="menu-toggle" class="btn btn-navbar glyphicon glyphicon-align-justify" href="">
+                    </a>
 {% endblock %}
 
 {% block header_extension %}{% endblock %}

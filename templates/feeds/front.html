@@ -1,0 +1,83 @@
+{% extends 'feeds/base.html' %}
+
+        {% block social_data %}
+        <meta property="og:url" content="{{ feed.get_absolute_url }}" />
+        <meta property="og:type" content="feed" />
+        <meta property="og:title" content="{{ feed.title }}" />
+        <meta property="og:description" content="{{ feed.description }}" />
+        <meta property="og:image" content="{{ post.cover.get_feed_post_url }}" />
+        <meta property="og:image" content="http://www.fartlyfe.com/media/images/logos/share-logo.png" />
+        {% endblock %}
+
+{% block title %} {{ feed.title }}{% endblock %}
+
+{% block header %}
+                    <a href="{{ cover.get_absolute_url }}">
+                        <div id="logo" style="background-image:url('{{ cover.cover.get_header_url }}');background-repeat:no-repeat;">
+                            <img class="col-xs-12" src="/media/images/logos/logo.png" alt="Fart Lyfe">
+                        </div>
+                        <div class="col-xs-12 header">
+                            <h1>{{ cover.title }}</h1>
+                        </div>
+                    </a>
+{% endblock %}
+
+{% block center_content %}
+        {% load fart_tags %}
+                <div class="row panel">
+                    <a href="{% url 'featured_posts' %}">
+                        <h3>featured</h3>
+                    </a>
+                    {% for item in featured %}
+                    <div class="col-md-3">
+                        <a href="{{ item.feed.get_absolute_url }}">
+                            <h4>{{ item.feed.title }}</h4>
+                        </a>
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{ item.cover.get_list_url }}">
+                            <h5>{{ item.title }}</h5>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row panel">
+                    <a href="{% url 'read_posts' %}">
+                        <h3>posts</h3>
+                    </a>
+                    {% for item in recent_posts %}
+                    <div class="col-md-3">
+                        <a href="{{ item.feed.get_absolute_url }}">
+                            <h4>{{ item.feed.title }}</h4>
+                        </a>
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{ item.cover.get_list_url }}">
+                            <h5>{{ item.title }}</h5>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row panel">
+                    <a href="{% url 'listen_posts' %}">
+                        <h3>podcasts</h3>
+                    </a>
+                    {% for item in recent_podcasts %}
+                    <div class="col-md-3">
+                        <a href="{{ item.feed.get_absolute_url }}">
+                            <h4>{{ item.feed.title }}</h4>
+                        </a>
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{ item.cover.get_list_url }}">
+                            <h5>{{ item.title }}</h5>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+        {% load endless %}
+        {% lazy_paginate object_list %}
+        {% for feed in object_list %}
+            {% item_list list=feed.post_set.all parent=feed number=4 %}
+        {% endfor %}
+        {% show_more %}
+
+{% endblock %}
+

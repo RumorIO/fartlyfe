@@ -16,26 +16,12 @@
                             <input type="submit" name="previous" value="previous" />
                             <input type="submit" name="next" value="next" />
                             <input type="submit" name="today" value="today" />
-                            <a href="{% url "calendar_event_create" %}">create new event</a>
                         </form> 
                     </div>
                     <div class="calendar-week">
+                    {% load fart_tags %}
                     {% for date, occurrences, hours_list, current in week %}
-                        <div class="week-day">
-                            <div class="week-headers"><a href="{% url "calendar_day" year=date|date:'Y' month=date|date:'m' day=date|date:'d' %}">{{ date|date:'D m/d' }}</a></div>
-                            {% for occurrence in occurrences %}
-                            <div class="week-event">
-                                <a href="{{ occurrence.get_absolute_url }}">
-                                    <div class="week-event-title">{{ occurrence }} » {{ occurrence.event.localevent.location.name }}</div>
-                                    <div class="week-event-time">{{ occurrence.start|date:"P" }}</div>
-                                </a>
-                            </div>
-                            {% empty %}
-                            <div class="week-event">
-                                <div class="week-event-title">nothing today folks</div>
-                            </div>
-                            {% endfor %}
-                        </div>
+                        {% item_list list=occurrences parent=date number=occurrences|length %}
                     {% endfor %}
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import os
 import audioread
 
 from django.db import models
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -19,7 +20,15 @@ def content_file_name(instance, filename):
     return '/'.join(['content', os.path.splitext(filename)[1][1:], today, filename])
 
 
+class PublicFeedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublicFeedManager,self).get_query_set().filter(public=True)
+ 
+
 class Feed(models.Model):
+    
+    objects = models.Manager()
+    published = PublicFeedManager()
     
     title = models.CharField(max_length=250, help_text='Maximum 250 characters.')
     slug = models.SlugField(unique=True, help_text="Automatically comes from title. Must be unique.", blank=True, editable=False)
@@ -27,7 +36,7 @@ class Feed(models.Model):
     image = models.ForeignKey(Photo, blank=True, null=True, on_delete=models.SET_NULL)
     authors = models.ManyToManyField(User)
     public = models.BooleanField()
-    
+
     #Podcast Info
     is_audio_podcast = models.BooleanField()
     is_video_podcast = models.BooleanField()
@@ -51,10 +60,7 @@ class Feed(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if self.is_video_podcast or self.is_audio_podcast:
-            return ('episode_list', (), {'slug': self.slug })
-        else:
-            return ('blog_post_list', (), {'slug': self.slug })
+        return ('posts_by_feed', (), {'slug': self.slug })
 
     def live_entry_set(self):
         from apps.feeds.models import Post
@@ -89,7 +95,7 @@ class Topic(models.Model):
 
 class LivePostManager(models.Manager):
     def get_query_set(self):
-        return super(LivePostManager,self).get_query_set().filter(status=self.model.LIVE_STATUS).filter(pub_date__lte=datetime.datetime.now())
+        return super(LivePostManager,self).get_query_set().filter(Q(status=self.model.LIVE_STATUS),Q(pub_date__lte=datetime.datetime.now()),Q(feed__public=True))
 
 
 class Post(models.Model):
@@ -113,13 +119,13 @@ class Post(models.Model):
     body = HTMLField()
     summary = models.CharField(max_length=250)
     pub_date = models.DateTimeField(default=datetime.datetime.now)
+    pub_date_year = models.DateField(editable=False)
     posted = models.DateTimeField(default=datetime.datetime.now, editable=False)
     slug = models.SlugField(unique_for_date='pub_date', blank=True, editable=False)
     topics = models.ManyToManyField(Topic, blank=True)
     cover = models.ForeignKey(Photo)
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
     tags = TagField(help_text="Seperate with spaces. Put multi-word tags in quotes.", verbose_name='tags')
-    on_front = models.BooleanField()
     featured = models.BooleanField()
 
     #Media
@@ -137,6 +143,7 @@ class Post(models.Model):
         permissions = (('can_publish_entry', 'Can publish entry'), ('can_publish_front', 'Can post on front page'))
     
     def save(self):
+        self.pub_date_year = self.pub_date.date()
         self.slug = slugify(self.title)
         if len(self.slug) > 50:
             self.slug = self.slug[:49]

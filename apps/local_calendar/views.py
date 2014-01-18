@@ -1,14 +1,32 @@
-from calendarium.views import MonthView, WeekView, DayView, EventDetailView, EventCreateView, OccurrenceDetailView, UpcomingEventsAjaxView 
+import calendar
+
+from django.utils.timezone import datetime, now, timedelta, utc
+from django.http import Http404, HttpResponseRedirect
+from django.views.generic.edit import CreateView
+from dateutil.relativedelta import relativedelta
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+        
 from calendarium.utils import monday_of_week
 from apps.local_calendar.models import LocalEvent, LocalOccurrence
 from apps.local_calendar.forms import LocalEventForm
+from calendarium.views import (
+        MonthView, 
+        WeekView,
+        DayView,
+        EventDetailView,
+        EventCreateView,
+        OccurrenceDetailView,
+        UpcomingEventsAjaxView,
+        CalendariumRedirectView,
+)
+    
 
-import calendar
-from dateutil.relativedelta import relativedelta
-from django.contrib.auth.models import User
-from django.views.generic.edit import CreateView
-from django.utils.timezone import datetime, now, timedelta, utc
-from django.http import Http404, HttpResponseRedirect
+class LocalCalendariumRedirectView(CalendariumRedirectView):
+    """View to redirect to the current month view."""
+    def get_redirect_url(self, **kwargs):
+        return reverse('calendar_week', kwargs={'year': now().year,
+                                                'week': now().isocalendar()[1]})
 
 
 class LocalMonthView(MonthView):

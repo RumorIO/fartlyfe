@@ -1,34 +1,74 @@
 {% extends 'calendar/base.html' %}
 
 {% block main %}
-    <div id="event-info">
-        <div id="event-left">
-            <div id="event-date"><a href="{% url 'calendar_day' year=occurrence.start|date:"Y" month=occurrence.start|date:"m" day=occurrence.start|date:"d" %}">{{ occurrence.start|date:"l M j, Y" }} »</a></div>
-            <div id="event-title"{% if occurrence.event.localevent.fartlyfe_offical %} class="official-event">LEGIT FART LYFE SHIT- {% else %}>{% endif %}{{ occurrence.title }}</div>
-            <div id="event-time">{{ occurrence.start|date:"P" }}</div>
-            <div id="event-age-limit">{{ occurrence.event.localevent.get_age_limit_display }}</div>
-            <div id="event-price">{% if occurrence.event.localevent.price %}${{ occurrence.event.localevent.price }}{% else %}Free{% endif %}</div>
+    <div class="row">
+        <div class="panel col-md-5">
+            <h4><a href="{% url 'calendar_day' year=occurrence.start|date:"Y" month=occurrence.start|date:"m" day=occurrence.start|date:"d" %}">{{ occurrence.start|date:"l M j, Y" }} »</a></h4>
+            <h3{% if occurrence.event.localevent.fartlyfe_offical %} class="official-event">LEGIT FART LYFE SHIT - {% else %}>{% endif %}{{ occurrence.title }}</h3>
+            <h5>{{ occurrence.start|date:"P" }}</h5>
+            <h5>{{ occurrence.event.localevent.get_age_limit_display }}</h5>
+            <h5>{% if occurrence.event.localevent.price %}${{ occurrence.event.localevent.price }}{% else %}Free{% endif %}</h5>
             <div id="event-description">{{ occurrence.description|safe }}</div>
         </div>
-        <div id="event-right">
-            {% if occurrence.event.localevent.location %}
+        {% if occurrence.event.localevent.location %}
+        <div class="panel col-md-5 col-md-offset-1">
             <div id="event-location">
-                <div id="location-title">{{ occurrence.event.localevent.location.name }}</div>
-                <div id="location-website"><a href="{{ occurrence.event.localevent.location.website }}">website</a></div>
-                <div id="location-number">{{ occurrence.event.localevent.location.phone_number }}</div>
+                <h4>{{ occurrence.event.localevent.location.name }}</h4>
+                
+                {% if occurrence.event.localevent.location.website %}
+                <h5>
+                    <a href="{{ occurrence.event.localevent.location.website }}">website</a>
+                </h5>
+                {% endif %}
+
+                {% if occurrence.event.localevent.location.phone_number %}
+                <h5>{{ occurrence.event.localevent.location.phone_number }}</h5>
+                {% endif %}
+
+                {% if occurrence.event.localevent.location.get_full_address %}
                 <div id="location-address">
                 {% for piece in occurrence.event.localevent.location.get_full_address %}
-                    <p>{{ piece }}</p>
+                    <h5>{{ piece }}</h5>
                 {% endfor %}
                 </div>
-                <div id="location-map" class="map-canvas">
-                    {% load show_info %}
+                <div class="map-canvas">
+                    {% load fart_tags %}
                     {{ occurrence.event.localevent.location|json_info|safe }}
                 </div>
-            </div>{% endif %}
+                {% endif %}
+            </div>
         </div>
+        {% endif %}
     </div>
+    <div class="row">
+                    <!-- AddThis Button BEGIN -->
+                    <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                    <a class="addthis_button_preferred_1"></a>
+                    <a class="addthis_button_preferred_2"></a>
+                    <a class="addthis_button_preferred_3"></a>
+                    <a class="addthis_button_preferred_4"></a>
+                    <a class="addthis_button_compact"></a>
+                    <a class="addthis_counter addthis_bubble_style"></a>
+                    <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+                    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5245ee0433860573"></script>
+                    </div>
+                    <!-- AddThis Button END -->
+                    <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                            var disqus_shortname = 'fartlyfe';
+                            (function() {
+                                var dsq = document.createElement('script'); dsq.type = 'text/javascript';dsq.async = true;
+                                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                            })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                            
+                    </div>
+    </div>
+{% endblock %}
 
-
+{% block bottom_js %}
+ <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhTLTDTMlPTop5wkX34vIzN1ZlWndWho0&sensor=false"></script>
 {% endblock %}
 

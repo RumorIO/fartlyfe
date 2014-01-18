@@ -12,6 +12,7 @@ from apps.local_calendar.views import (
     LocalEventCreateView,
     LocalOccurrenceDetailView,
     LocalUpcomingAjaxView,
+    LocalCalendariumRedirectView,
 )
 
 
@@ -48,12 +49,8 @@ urlpatterns = patterns(
         name='calendar_upcoming_events'),
 
     url(r'^$',
-        CalendariumRedirectView.as_view(),
+        LocalCalendariumRedirectView.as_view(),
         name='calendar_main'),
-
-    url(r'store/^$',
-        CalendariumRedirectView.as_view(),
-        name='store_main'),
 
 
 )

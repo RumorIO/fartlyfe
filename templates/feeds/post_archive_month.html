@@ -2,9 +2,33 @@
 
 {% block title %} archive {{ month|date:"F Y" }}{% endblock %}
 
+
+{% block header %}
+                    {% if feed.cover %}
+                        <img src="{{ feed.cover.get_header_url }}">
+                    {% else %}
+                        <h1 class="page-top col-xs-offset-8 col-xs-4">{{ feed.title }}</h1>
+                    {% endif %}
+                    <a href="{% url 'archive_top' slug=feed.slug %}">
+                        <h4 class="pull-right">Full Archive</h4>
+                    </a>
+{% endblock %}
+
+
+
 {% block center_content %}{{ block.super}}
-    <div id="archive-title">{% if previous_month %}<a href="/blog/archive/{{ previous_month|date:"Y" }}/{{ previous_month|date:"b" }}/"><< {{ previous_month|date:"F Y" }}</a> |{% endif %} {{ month|date:"F Y"}} {% if next_month %}| <a href="/blog/archive/{{ next_month|date:"Y" }}/{{ next_month|date:"b" }}/">{{ next_month|date:"F Y" }} >></a>{% endif %}</div>
-        {% for post in object_list %}<div class="post">
-            <a href="{{ post.get_absolute_url }}"><div class="post-title">{{ post.title }}</div></a>
-        </div>{% endfor %}
+        <h3>{% if previous_month %}<a href="{% url 'month_posts' slug=feed.slug year=previous_month|date:"Y" month=previous_month|date:"b" %}"><< {{ previous_month|date:"F Y" }}</a> |{% endif %} {{ month|date:"F Y"}} {% if next_month %}| <a href="{% url 'month_posts' slug=feed.slug year=next_month|date:"Y" month=next_month|date:"b" %}">{{ next_month|date:"F Y" }} >></a>{% endif %}</h3>
+        
+        {% load fart_tags %}    
+        {% for item in object_list %}
+        <div class="col-md-3">
+            <a href="{{ item.get_absolute_url }}">
+                <img src="{{ item.cover.get_list_url }}">
+                <h5>
+                    {{ item.title }}
+                </h5>
+            </a>
+        </div>
+        {% endfor %}
+
 {% endblock %}

@@ -45,4 +45,13 @@ class RecentPostsNode(template.Node):
             recent = Post.live.filter(Q(feed__is_audio_podcast=True)|Q(feed__is_video_podcast=True)).order_by('-pub_date')[:10]
         return render_to_string('recent_list.html', { 'list': recent })
 
+@register.filter
+def get_month_cover_url(value, slug)
+    year = month.strftime('%Y')
+    month = month.strftime('%m')
+    posts = Post.live.filter(feed__slug=slug).filter(pub_date_year__year=year, pub_date_year__month=month)
+    first = posts[0]
+    return first.cover.get_list_url
+
+
 
