@@ -103,6 +103,8 @@ a:hover {
 
 #social-links>a>img {
     padding: 0px 4px 0px 0px;
+    width:40px;
+    height:40px;
 }
 
 #page {
