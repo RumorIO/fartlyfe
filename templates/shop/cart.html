@@ -1,0 +1,87 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+
+{% block body %}
+  <h1>{% trans "Shopping Cart" %}</h1>
+    {% if cart_items %}
+
+    <form method="post" action="{% url 'cart_update' %}">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="row">
+            <div class="row">
+                <div class="col-xs-3 col-md-2"><h5>{% trans "Product name" %}</h5></div>
+                <div class="col-xs-3 col-md-2"><h5>{% trans "Unit price" %}</h5></div>
+                <div class="col-xs-3 col-md-2"><h5>{% trans "Quantity" %}</h5></div>
+                <div class="col-xs-3 col-md-2"></div>
+            </div>
+
+            <div class="row">
+            {% for form in formset %}
+                {% with form.quantity as field %}
+                <div class="row">
+                  <div class="col-xs-3 col-md-2">{{ form.instance.product.get_name }}</div>
+                  <div class="col-xs-3 col-md-2">{{ form.instance.product.get_price }}</div>
+                  <div class="col-xs-3 col-md-2">
+                      {{ form.id }}
+                      {{ field.errors }}
+                      {{ field }}</div>
+                  <div class="col-xs-3 col-md-2">{{ form.instance.line_subtotal }}</div>
+                </div>
+                {% for extra_price_field in form.instance.extra_price_fields %}
+                  <div class="row">
+                    <div class="col-xs-6 col-md-4">&nbsp;</div>
+                    <div class="col-xs-3 col-md-2">{{ extra_price_field.0 }}</div>
+                    <div class="col-xs-3 col-md-2">{{ extra_price_field.1 }}</div>
+                  </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col-xs-6 col-md-4">&nbsp;</div>
+                    <div class="col-xs-3 col-md-2">{% trans "Item Total" %}:</div>
+                    <div class="col-xs-3 col-md-2">{{ form.instance.line_total }}</div>
+                </div>
+                {% endwith %}
+            {% endfor %}
+            </div>
+
+            <div class="row">
+                <div class="row">
+                    <div class="col-xs-6 col-md-4">&nbsp;</div>
+                    <div class="col-xs-3 col-md-2">{% trans "Subtotal" %}</div>
+                    <div class="col-xs-3 col-md-2">{{cart.subtotal_price}}</div>
+                </div>
+                {% for extra_price_field in cart.extra_price_fields %}
+                <div class="row">
+                    <div class="col-xs-6 col-md-4">&nbsp;</div>
+                    <div class="col-xs-3 col-md-2">{{ extra_price_field.0 }}</div>
+                    <div class="col-xs-3 col-md-2">{{ extra_price_field.1 }}</div>
+                </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col-xs-6 col-md-4">&nbsp;</div>
+                    <div class="col-xs-3 col-md-2"><h5>{% trans "Total" %}</h5></div>
+                    <div class="col-xs-3 col-md-2"><h5>{{cart.total_price}}</h5></div>
+                </div>
+            </div>
+        </div>
+
+        <p><input class="btn btn-default" type="submit" value="{% trans "Update Your Cart" %}"/></p>
+    </form>
+
+    <form action="{% url 'cart_delete' %}" method="post">
+        {% csrf_token %}
+        <p><input class="btn btn-default" type="submit" value="{% trans "Empty Your Cart" %}"/></p>
+    </form>
+
+    <p>
+        <a class="btn btn-default" href="{% url 'checkout_selection' %}">{% trans "Checkout" %}</a>
+    </p>
+
+    {% else %}
+    <p>
+        {% trans "There's nothing in here" %}
+    </p>
+    {% endif %}
+{% endblock %}
+
+

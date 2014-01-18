@@ -1,0 +1,42 @@
+{% extends "shop/base.html" %}
+
+{% block body %}
+        <h3>Shipping and Billing</h3>
+        <form class="col-md-6" method="POST">{% csrf_token %}
+            <h4>Your shipping address</h4>
+            {% load widget_tweaks %}
+            {% for field in shipping_address %}
+                <div class="form-group fieldWrapper">
+                {{ field.label_tag }}
+                {{ field.errors }}
+                {% render_field field class+="form-control" %}
+                </div>
+            {% endfor %} 
+            <h4>Your billing address</h4>
+            {% for field in billing_address %}
+                <div class="form-group fieldWrapper">
+                {{ field.label_tag }}
+                {{ field.errors }}
+                {% render_field field class+="form-control" %}
+                </div>
+            {% endfor %} 
+            <h4>Payment and Shipping Methods</h4>
+            {% for field in billing_shipping_form %}
+                <div class="form-group fieldWrapper">
+                {{ field.label_tag }}
+                {{ field.errors }}
+                {% render_field field class+="form-control" %}
+                </div>
+            {% endfor %} 
+            <h4>Extra info</h4>
+            {% for field in extra_info_form %}
+                <div class="form-group fieldWrapper">
+                {{ field.label_tag }}
+                {{ field.errors }}
+                {% render_field field class+="form-control" %}
+                </div>
+            {% endfor %} 
+            <button class="btn btn-default" type="submit">Save</button>
+        </form>
+{% endblock %}
+

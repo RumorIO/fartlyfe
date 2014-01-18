@@ -148,10 +148,13 @@ INSTALLED_APPS = (
     'shop',
     'shop.addressmodel',
     'shop_simplecategories',
+    'shop_simplevariations',
     'paypal.standard.ipn',
     'shop_paypal',
     'debug_toolbar',
     'bootstrap3',
+    'polymorphic',
+    'widget_tweaks',
 
     #Original
     'apps.feeds',
@@ -206,7 +209,27 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+SHOP_CART_MODIFIERS = [
+    'shop_simplevariations.cart_modifier.ProductOptionsModifier',
+    'shop_simplevariations.cart_modifier.TextOptionsModifier',
+    'apps.this_shop.modifiers.FixedShippingCosts',
+    ]
+
+SHOP_PAYMENT_BACKENDS = [
+    'shop_paypal.offsite_paypal.OffsitePaypalBackend',
+    ]
+
+SHOP_SHIPPING_FLAT_RATE = '5'
+SHOP_SHIPPING_BACKENDS = [
+    'shop.shipping.backends.flat_rate.FlatRateShipping',
+    ]
+
 PAYPAL_SANDBOX_MODE = True
+PAYPAL_RECEIVER_EMAIL = 'admin@fartlyfe.com'
+PAYPAL_CURRENCY_CODE = 'USD'
+
+
+ENDLESS_PAGINATION_PER_PAGE = 3
 
 from fartlyfe.local_settings import *
 

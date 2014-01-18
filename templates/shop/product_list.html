@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+
+{% block header %}
+    <a href="{% url 'shop_main' %}">
+        <h1 class="pull-right col-xs-6 col-md-3 col-xs-offset-6 col-md-offset-9">
+            fart lyfe {{ category.name }}
+        </h1>
+    </a>
+{% endblock %}
+
+{% block body %}
+        {% load fart_tags %}
+        {% load endless %}
+        {% lazy_paginate object_list %}
+        {% for item in object_list %}
+        <div class="col-md-3">
+            <a href="{{ item.get_absolute_url }}">
+                <img src="{{ item.cover.get_list_url }}">
+                <h5>
+                    {{ item.title }}
+                </h5>
+            </a>
+        </div>
+        {% endfor %}
+        {% show_more %}
+{% endblock %}
+

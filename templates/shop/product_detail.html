@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+
+{% block body %}
+    <div class="row">
+        <h3>{{ object.name  }}<h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ object.cover.get_detail_url }}">
+        </div>
+        <div class="col-md-6">
+            <h5>${{ object.get_price }}</h5>
+            <p>{{ object.description|safe }}</p>
+            {% for category in object.categories.all %}
+                <a href="{{ category.get_absolute_url }}">
+                    <h5>{{ category.name }}</h5>
+                </a>
+            {% endfor %}
+            <form method="post" action="{% url 'cart' %}">{% csrf_token %}
+                <input type="hidden" name="add_item_id" value="{{ object.id }}">
+                <input type="hidden" name="add_item_quantity" value="1">
+                <input class="btn btn-default" type="submit" value="Add to cart">
+            </form>
+        </div>
+    </div>
+    <div class="row">
+    </div>
+{% endblock %}
+
