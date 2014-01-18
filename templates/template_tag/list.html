@@ -1,0 +1,27 @@
+<div class="row panel">
+    {% load fart_tags %}
+    {% if 'datetime' in parent|doc %}
+    <a href="{% url "calendar_day" year=parent|date:'Y' month=parent|date:'m' day=parent|date:'d' %}">
+        <h3>{{ parent|date:'D m/d' }}</h3>
+    </a>                      
+    {% else %}
+    <a href="{{ parent.get_absolute_url }}">
+        <h3>{% firstof parent.title parent.name %}</h3>
+    </a>
+    {% endif %}
+    {% for item in object_list %}
+    <div class="col-md-3">
+        <a href="{{ item.get_absolute_url }}">
+            <img src="{{ item.cover.get_list_url }}">
+            <h5>
+            {% if 'Occurrence' in item|doc %}{{ item.start|date:'P' }} » {% endif %}
+            {{ item.title }}
+            </h5>
+        </a>
+    </div>
+    {% empty %}
+    <div class="col-md-3">
+        <h5>Nothing today, folks.</h5>
+    </div>
+    {% endfor %}
+</div>
