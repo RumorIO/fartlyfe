@@ -26,6 +26,8 @@ class Podcast(models.Model):
     itunes_link = models.URLField(blank=True)
     authors = models.ManyToManyField(User)
 
+    public = models.BooleanField()
+
     class Meta:
         ordering = ['title']
 

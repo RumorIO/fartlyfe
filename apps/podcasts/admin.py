@@ -5,7 +5,20 @@ from tinymce.widgets import TinyMCE
 
 
 class PodcastAdmin(admin.ModelAdmin):
-    pass
+    
+    def get_form(self, request, obj=None, **kwargs):
+        self.exclude = []
+        if not request.user.has_perm('podcasts.add_podcast'):
+            self.exclude.append('authors')
+            self.exclude.append('public')
+        return super(PodcastAdmin, self).get_form(request, obj, **kwargs) 
+
+    def queryset(self, request):
+        qs = Podcast.objects.all()
+        if request.user.has_perm('podcasts.add_podcast'):
+            return qs
+        return qs.filter(authors=request.user)
+
 
 class EpisodeAdmin(admin.ModelAdmin):
     formfield_overrides = {

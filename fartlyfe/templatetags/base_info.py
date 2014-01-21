@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 
 import datetime
 
-from apps.blogs.models import TopEntry, Entry
+from apps.blogs.models import Entry
 from apps.podcasts.models import Episode
 
 def do_featured_entries(parser, token):
@@ -15,7 +15,7 @@ def do_featured_entries(parser, token):
 class FeaturedEntriesNode(template.Node):
 
     def render(self, context):
-        featured_entries = Entry.live.filter(featured=True)
+        featured_entries = Entry.live.filter(featured=True)[:4]
         return render_to_string('blogs/featured_entries.html', { 'entries': featured_entries })
 
 def do_recent_entries(parser, token):
@@ -27,7 +27,7 @@ def do_recent_entries(parser, token):
 class RecentEntriesNode(template.Node):
 
     def render(self, context):
-        recent_entries = Entry.live.order_by('-pub_date')[:5]
+        recent_entries = Entry.live.order_by('-pub_date')[:10]
         return render_to_string('recent_list.html', { 'list': recent_entries })
 
 def do_recent_episodes(parser, token):
@@ -39,7 +39,7 @@ def do_recent_episodes(parser, token):
 class RecentEpisodesNode(template.Node):
 
     def render(self, context):
-        recent_episodes = Episode.objects.filter(pub_date__lte=datetime.datetime.now()).order_by('-pub_date')[:5]
+        recent_episodes = Episode.objects.filter(podcast__public=True).filter(pub_date__lte=datetime.datetime.now()).order_by('-pub_date')[:5]
         return render_to_string('recent_list.html', { 'list': recent_episodes })
 
 

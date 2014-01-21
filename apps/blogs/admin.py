@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.blogs.models import Category, Entry, Blog, TopEntry
+from apps.blogs.models import Category, Entry, Blog
 from tinymce.models import HTMLField
 from tinymce.widgets import TinyMCE
 
@@ -68,11 +68,8 @@ class EntryAdmin(admin.ModelAdmin):
                         (DRAFT_STATUS, 'Draft'),)
         return super(EntryAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
                 
-class TopEntryAdmin(admin.ModelAdmin):
-    pass
 
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Entry, EntryAdmin)
-admin.site.register(TopEntry, TopEntryAdmin)
 

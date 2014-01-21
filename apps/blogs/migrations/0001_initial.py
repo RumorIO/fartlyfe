@@ -15,9 +15,17 @@ class Migration(SchemaMigration):
             ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50, blank=True)),
             ('description', self.gf('tinymce.models.HTMLField')()),
             ('picture', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
         ))
         db.send_create_signal(u'blogs', ['Blog'])
+
+        # Adding M2M table for field authors on 'Blog'
+        m2m_table_name = db.shorten_name(u'blogs_blog_authors')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('blog', models.ForeignKey(orm[u'blogs.blog'], null=False)),
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['blog_id', 'user_id'])
 
         # Adding model 'Category'
         db.create_table(u'blogs_category', (
@@ -36,9 +44,13 @@ class Migration(SchemaMigration):
             ('status', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=250)),
             ('body', self.gf('tinymce.models.HTMLField')()),
+            ('summary', self.gf('django.db.models.fields.CharField')(max_length=250)),
             ('pub_date', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('posted', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, blank=True)),
+            ('cover', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['photologue.Photo'])),
             ('gallery', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['photologue.Gallery'], null=True, blank=True)),
+            ('tags', self.gf('tagging.fields.TagField')()),
         ))
         db.send_create_signal(u'blogs', ['Entry'])
 
@@ -51,10 +63,21 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['entry_id', 'category_id'])
 
+        # Adding model 'TopEntry'
+        db.create_table(u'blogs_topentry', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('entry', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blogs.Entry'])),
+            ('front_status', self.gf('django.db.models.fields.IntegerField')(default=0, null=True)),
+        ))
+        db.send_create_signal(u'blogs', ['TopEntry'])
+
 
     def backwards(self, orm):
         # Deleting model 'Blog'
         db.delete_table(u'blogs_blog')
+
+        # Removing M2M table for field authors on 'Blog'
+        db.delete_table(db.shorten_name(u'blogs_blog_authors'))
 
         # Deleting model 'Category'
         db.delete_table(u'blogs_category')
@@ -64,6 +87,9 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field categories on 'Entry'
         db.delete_table(db.shorten_name(u'blogs_entry_categories'))
+
+        # Deleting model 'TopEntry'
+        db.delete_table(u'blogs_topentry')
 
 
     models = {
@@ -98,7 +124,7 @@ class Migration(SchemaMigration):
         },
         u'blogs.blog': {
             'Meta': {'ordering': "['title']", 'object_name': 'Blog'},
-            'author': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'authors': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'}),
             'description': ('tinymce.models.HTMLField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'picture': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
@@ -118,12 +144,22 @@ class Migration(SchemaMigration):
             'blog': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['blogs.Blog']"}),
             'body': ('tinymce.models.HTMLField', [], {}),
             'categories': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['blogs.Category']", 'symmetrical': 'False'}),
+            'cover': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['photologue.Photo']"}),
             'gallery': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': u"orm['photologue.Gallery']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'posted': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'pub_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
+            'summary': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
+            'tags': ('tagging.fields.TagField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '250'})
+        },
+        u'blogs.topentry': {
+            'Meta': {'object_name': 'TopEntry'},
+            'entry': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['blogs.Entry']"}),
+            'front_status': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -139,7 +175,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'photos': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'galleries'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['photologue.Photo']"}),
-            'tags': ('photologue.models.TagField', [], {'max_length': '255', 'blank': 'True'}),
+            'tags': ('tagging.fields.TagField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'title_slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
         },
@@ -153,7 +189,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
             'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'tags': ('photologue.models.TagField', [], {'max_length': '255', 'blank': 'True'}),
+            'tags': ('tagging.fields.TagField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'title_slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'}),
             'view_count': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'})

@@ -7,7 +7,7 @@ from apps.podcasts.settings import SKILL_CHOICES
 
 
 class PodcastListView(ListView):
-    queryset = Podcast.objects.all()
+    queryset = Podcast.objects.filter(public=True)
     paginate_by = 10
     template_name = 'top_list.html'
     context_object_name = 'items'

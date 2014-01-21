@@ -15,7 +15,7 @@ class Blog(models.Model):
     title = models.CharField(max_length=250, help_text='Maximum 250 characters.')
     slug = models.SlugField(unique=True, help_text="Automatically comes from title. Must be unique.", blank=True, editable=False)
     description = HTMLField()
-    picture = models.ImageField(upload_to="media/blog/images/logos/", blank=True)
+    #picture = models.ImageField(upload_to="media/blog/images/logos/", blank=True)
     authors = models.ManyToManyField(User)
     public = models.BooleanField()
 
@@ -42,7 +42,7 @@ class Category(models.Model):
     title = models.CharField(max_length=250, help_text='Maximum 250 characters.')
     slug = models.SlugField(unique=True, help_text="Automatically comes from title. Must be unique.", blank=True, editable=False)
     description = HTMLField()
-    picture = models.ImageField(upload_to="media/blog/images/categorylogos/", blank=True)
+    #picture = models.ImageField(upload_to="media/blog/images/categorylogos/", blank=True)
 
     class Meta:
         ordering = ['title']
@@ -64,8 +64,8 @@ class Category(models.Model):
 
 class LiveEntryManager(models.Manager):
     def get_query_set(self):
-        return super(LiveEntryManager,self).get_query_set().filter(status=self.model.LIVE_STATUS).filter(pub_date__lte=datetime.datetime.now())
-
+        return super(LiveEntryManager,self).get_query_set().filter(status=self.model.LIVE_STATUS).filter(pub_date__lte=datetime.datetime.now()+datetime.timedelta(hours=1))
+ 
 class Entry(models.Model):
     LIVE_STATUS = 1
     SUBMITTED_STATUS = 2
@@ -115,31 +115,4 @@ class Entry(models.Model):
                                         'month': self.pub_date.strftime("%b").lower(),
                                         'day': self.pub_date.strftime("%d"),
                                         'slug': self.slug })
-
-class TopEntry(models.Model):
-
-    PLACEMENT = (
-        (1, 'Headline'),
-        (2, 'Left'),
-        (3, 'Middle'),
-        (4, 'Right'),)
-    
-    entry = models.ForeignKey(Entry)
-    front_status = models.IntegerField(choices=PLACEMENT, null=True, default=0)
-
-    class Meta:
-        verbose_name_plural = "Top Entries"
-    
-    def save(self):
-        if self.front_status:
-            try:
-                prior = TopEntry.objects.get(front_status=self.front_status)
-                if prior.entry.title != self.entry.title:
-                    prior.delete()
-            except TopEntry.DoesNotExist:
-                pass
-        super(TopEntry, self).save()
-
-    def __unicode__(self):
-        return unicode(str(self.entry) + ' - ' + str(self.get_front_status_display()))
 

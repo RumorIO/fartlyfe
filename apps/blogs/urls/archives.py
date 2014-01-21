@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 from apps.blogs.models import Entry
 from apps.blogs.views import BlogTopArchiveView, BlogYearArchiveView, BlogMonthArchiveView, BlogDetailView

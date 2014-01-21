@@ -182,5 +182,8 @@ TINYMCE_DEFAULT_CONFIG = {
     'document_base_url' : "http://www.fartlyfe.com/",
 }
 
+PHOTOLOGUE_IMAGE_FIELD_MAX_LENGTH = 255
+
+
 from fartlyfe.local_settings import *
 
