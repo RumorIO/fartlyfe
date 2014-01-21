@@ -13,7 +13,8 @@
 
 {% block header %}
                     <a href="{{ cover.get_absolute_url }}">
-                        <div id="logo" style="background-image:url('{{ cover.cover.get_header_url }}');background-repeat:no-repeat;">
+                        <div id="logo" class="col-xs-12"
+                        style="background-image:url('{{ cover.cover.get_header_url }}');background-repeat:no-repeat;background-size:cover;">
                             <img class="col-xs-12" src="/media/images/logos/logo.png" alt="Fart Lyfe">
                         </div>
                         <div class="col-xs-12 header">

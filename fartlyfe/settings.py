@@ -157,6 +157,8 @@ INSTALLED_APPS = (
     'widget_tweaks',
 
     #Original
+    'apps.blogs',
+    'apps.podcasts',
     'apps.feeds',
     'apps.local_calendar',
     'apps.search',

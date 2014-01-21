@@ -1,12 +1,16 @@
 {% extends 'shop/base.html' %}
 
+{% block header %}
+    {{ block.super }}
+{% endblock %}
+
 {% block body %}
     <div class="row">
         <h3>{{ object.name  }}<h3>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ object.cover.get_detail_url }}">
+            <img src="{{ object.cover.get_shop_url }}">
         </div>
         <div class="col-md-6">
             <h5>${{ object.get_price }}</h5>
@@ -24,6 +28,30 @@
         </div>
     </div>
     <div class="row">
+                    <!-- AddThis Button BEGIN -->
+                    <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                    <a class="addthis_button_preferred_1"></a>
+                    <a class="addthis_button_preferred_2"></a>
+                    <a class="addthis_button_preferred_3"></a>
+                    <a class="addthis_button_preferred_4"></a>
+                    <a class="addthis_button_compact"></a>
+                    <a class="addthis_counter addthis_bubble_style"></a>
+                    <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+                    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5245ee0433860573"></script>
+                    </div>
+                    <!-- AddThis Button END -->
+                    <div id="disqus_thread"></div>
+                        <script type="text/javascript">
+                            var disqus_shortname = 'fartlyfe';
+                            (function() {
+                                var dsq = document.createElement('script'); dsq.type = 'text/javascript';dsq.async = true;
+                                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                            })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                            
+                    </div>
     </div>
 {% endblock %}
 

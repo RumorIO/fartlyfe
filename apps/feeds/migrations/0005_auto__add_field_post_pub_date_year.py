@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Post.pub_date_year'
         db.add_column(u'feeds_post', 'pub_date_year',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 1, 14, 0, 0)),
+                      self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 1, 18, 0, 0)),
                       keep_default=False)
 
 
@@ -90,7 +90,7 @@ class Migration(SchemaMigration):
             'mimetype': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
             'posted': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'pub_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'pub_date_year': ('django.db.models.fields.DateTimeField', [], {}),
+            'pub_date_year': ('django.db.models.fields.DateField', [], {}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'summary': ('django.db.models.fields.CharField', [], {'max_length': '250'}),

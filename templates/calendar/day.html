@@ -21,9 +21,7 @@
                     </div>
                     <div class="week-day">
                         {% load fart_tags %}
-                        {% for occurrence in occurrences %}
-                            {% item_list list=occurrences parent=day number=occurrences|length %}
-                        {% endfor %}
+                        {% item_list list=occurrences parent=day number=occurrences|length %}
                     </div>
                 </div>
 

@@ -24,6 +24,10 @@ header h1 {
     text-align:center;
 }
 
+#logo>img:hover {
+    opacity:.5;
+}
+
 a {
     color:black;
 }
@@ -33,8 +37,12 @@ a:hover {
     text-decoration:underline;
 }
 
+img {
+    width:100%;
+}
+
 .row {
-    margin:0px;
+    margin:10px 0px;
 }
 
 #page-content-wrapper {
@@ -148,6 +156,9 @@ a:hover {
     text-align:right;
 }
 
+.post-body img {
+    width:100%;
+}
 
 audio {
     height:50px;
@@ -186,8 +197,9 @@ ul.errorlist {
     min-height:100px;
 }
 
-#categories ul {
+#categories li {
     list-style:none;
+    display:inline-block;
 }
 
 #event-location {
@@ -198,5 +210,4 @@ ul.errorlist {
     height:300px;
     color:white;
 }
-
 

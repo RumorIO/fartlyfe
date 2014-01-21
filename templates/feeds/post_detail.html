@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="panel col-xs-12">
                     <h3>{{ post.title }}</h3>
-                    <div class="entry-body">
+                    <div class="post-body">
                         {{ post.body|safe }}
                     </div>
                     {% if post.gallery %}<div id="gallery">
@@ -40,8 +40,8 @@
                             {% endif %}
                         </div>{% endfor %}
                     </div>{% endif %}
-                    <div class="author-name">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
-                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ entry.tags|pluralize }}</a> : {% for tag in entry.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
+                    <div class="author-name pull-right">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
+                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ post.tags|pluralize }}</a> : {% for tag in post.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
                     <!-- AddThis Button BEGIN -->
                     <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
                     <a class="addthis_button_preferred_1"></a>

@@ -24,7 +24,7 @@ def item_list(*args, **kwargs):
     else:
         number = 4
     return {
-            'object_list' : object_list,
+            'object_list' : object_list[:number],
             'parent' : parent,
             'number' : number,}
 

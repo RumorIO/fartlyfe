@@ -25,7 +25,7 @@
                     <a href="{{ post.get_absolute_url }}">
                         <h3>{{ post.title }}</h3>
                     </a>
-                    <div class="entry-body">
+                    <div class="post-body">
                         {{ post.body|safe }}
                     </div>
                     {% if post.gallery %}<div id="gallery">
@@ -39,9 +39,9 @@
                             {% endif %}
                         </div>{% endfor %}
                     </div>{% endif %}
-                    <div class="author-name">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
-                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ entry.tags|pluralize }}</a> : {% for tag in entry.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
-                    <div id="page-link"><a href="{{ entry.get_absolute_url }}#disqus_thread">Comment</a></div>
+                    <div class="author-name pull-right">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
+                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ post.tags|pluralize }}</a> : {% for tag in post.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
+                    <div id="page-link"><a href="{{ post.get_absolute_url }}#disqus_thread">Comment</a></div>
                 </div>
             </div>
             {% endfor %}

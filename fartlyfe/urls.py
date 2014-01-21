@@ -5,7 +5,7 @@ from django.views.generic.base import RedirectView
 from apps.feeds.views import FrontPageView
 from apps.feeds.models import Post
 from fartlyfe.api.resources import EventResource, BlogResource
-from rss_feeds import RssBlogFeed, AtomBlogFeed, RssPodcastFeed, AtomPodcastFeed, iTunesPodcastsFeed
+from apps.feeds.feeds import iTunesPodcastsFeed
 
 import photologue
 from tastypie.api import Api
