@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+
+{% block body %}
+    <h3>Thank you for your order!</h3>
+    </br>    
+    <p>Your order has been placed and we'll get it right out to you!</p>
+    </br>
+    <a class="btn btn-default" href="{% url 'shop_welcome' %}">Back to the main page</a>
+{% endblock %}
+

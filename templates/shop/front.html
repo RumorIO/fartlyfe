@@ -1,0 +1,20 @@
+{% extends 'shop/base.html' %}
+
+{% block header %}
+    <a href="{% url 'shop_main' %}">
+        <h1 class="pull-right col-xs-6 col-md-3 col-xs-offset-6 col-md-offset-9">
+            buy your fart lyfe
+        </h1>
+    </a>
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+        {% load fart_tags %}
+        {% load endless %}
+        {% lazy_paginate object_list %}
+        {% for category in object_list %}
+            {% item_list list=category.products.all parent=category number=4 %}
+        {% endfor %}
+        {% show_more %}
+{% endblock %}

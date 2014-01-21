@@ -12,9 +12,8 @@ class FrontPageView(ArchiveIndexView):
     queryset = Entry.live.filter(on_front=True)
 
 class BlogListView(ListView):
-    template_name = 'top_list.html'
+    template_name = 'blogs/stream_list.html'
     context_object_name = 'items'
-    paginate_by = 10
     queryset = Blog.objects.filter(public=True)
     
     def get_context_data(self, **kwargs):
@@ -78,4 +77,12 @@ class BlogDetailView(DetailView):
         return Entry.live.filter(blog__slug=self.kwargs['blog'])
 
         
+class TagDetailView(DetailView):
+    pass
+
+class TagListView(ListView):
+    pass
+
+
+
 

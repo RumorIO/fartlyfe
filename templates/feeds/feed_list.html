@@ -1,0 +1,18 @@
+{% extends 'feeds/base.html' %}
+
+
+{% block header %}
+
+{% endblock %}
+
+{% block center_content %}
+        {% load fart_tags %}
+        {% load endless %}
+        {% lazy_paginate object_list %}
+        {% for feed in object_list %}
+            {% item_list list=feed.post_set.all parent=feed number=4 %}
+        {% endfor %}
+        {% show_more %}
+
+{% endblock %}
+

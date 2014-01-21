@@ -1,0 +1,68 @@
+{% extends 'calendar/base.html' %}
+
+ 
+{% block calendar %}
+        <h3>{{ date|date:"F Y" }}</h3>
+        <div id="calendar-top">
+            <div id="categories">
+                <ul>
+                    <li>{% if not current_category %}<strong>{% endif %}<a href=".">All events</a>{% if not current_category %}</strong>{% endif %}</li>
+                    {% for category in categories %}
+                    <li> • {% if category == current_category %}<strong>{% endif %}<a href=".?category={{ category.pk }}">{{ category.name }}</a>{% if category == current_category %}</strong>{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <form action="." method="post">{% csrf_token %}
+                <input type="submit" name="previous" value="previous" />
+                <input type="submit" name="next" value="next" />
+                <input type="submit" name="today" value="today" />
+            </form> 
+        </div>
+        <div class="panel row">
+            <div id="row">
+                <div class="col-xs-offset-2 col-xs-1"></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>sunday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>monday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>tuesday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>wednesday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>thursday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>friday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-lg"><h4>saturday</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>sun</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>mon</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>tues</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>wed</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>thurs</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>fri</h4></div>
+                <div class="calendar-headers col-xs-1 visible-md"><h4>sat</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>SU</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>MO</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>TU</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>WE</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>TH</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>FR</h4></div>
+                <div class="calendar-headers col-xs-1 hidden-md hidden-lg"><h4>SA</h4></div>
+            </div>
+            {% load local_calendar_tags %}
+            {% for week in month %}
+            {% if week %}
+            <div class="row">
+                <div class="col-xs-offset-2 col-xs-1 left-column"><a href="{{ date|get_week_URL:week.0.0 }}">see all week</a></div>
+                {% for day, occurrences, current in week %}
+                    <div class="col-xs-1 calendar-day">
+                    {% if day != 0 %}
+                        {% if current %}<strong>{% endif %}<a href="{% url "calendar_day" year=date|date:"Y" month=date|date:"m" day=day %}">{{ day }}</a>{% if current %}</strong>{% endif  %}
+                        {% for occurrence in occurrences %}
+                            <p><a href="{{ occurrence.get_absolute_url }}">{{ occurrence.start|date:'P' }}»</br> {{ occurrence }}</a></p>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+
+{% endblock %}
+ 

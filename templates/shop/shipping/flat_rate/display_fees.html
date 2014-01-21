@@ -1,0 +1,6 @@
+{% extends "shop/base.html" %}
+
+{% block body %}
+  <h3>You will be charged ${{shipping_costs}} for shipping everything.</h3><br/>
+  <a class="btn btn-default" href="{% url 'flat_process' %}">Next</a>
+{% endblock %}

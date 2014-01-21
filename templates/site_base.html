@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block header %}{% endblock %}
+
+{% block menu %}
+                <div id="menu" class="didot">
+                    <ul class="sidebar-nav" id="main-nav">
+                        <li class="sidebar-brand">
+                            <a href="{% url 'main' %}">
+                                fart lyfe
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="collapse" data-parent="main-nav" href="#feedCollapse">
+                                Feeds
+                            </a>
+                            <ul id="feedCollapse" class="sidebar-nav second-level collapse">                
+                                <li>
+                                    <a href="{% url 'all_feeds' %}">
+                                        <p>All</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'read_feeds' %}">
+                                        <p>Read</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'listen_feeds' %}">
+                                        <p>Listen</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'watch_feeds' %}">
+                                        <p>Watch</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'calendar_main' %}">
+                                <p>Calendar</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'shop_main' %}">
+                                <p>Shop</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/about/">
+                                <p>About</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="social-links">
+                        <a href="https://www.facebook.com/pages/fART-LyFE/521634897916745">
+                            <img src="/media/images/logos/facebook.png" alt='Facebook'>
+                        </a>
+                        <a href="http://www.twitter.com/FartLyfe">
+                            <img src="/media/images/logos/twitter.png" alt='Twitter'>
+                        </a>
+                    </div>
+                </div>
+{% endblock %}
+
+{% block menu_button %}
+                    <a id="menu-toggle" class="btn btn-navbar glyphicon glyphicon-align-justify" href="">
+                    </a>
+{% endblock %}
+
+{% block header_extension %}{% endblock %}
+
+{% block main %}{% endblock %}
+

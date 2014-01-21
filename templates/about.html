@@ -1,0 +1,12 @@
+{% extends 'site_base.html' %}
+
+{% block title %} {{ flatpage.title }}{% endblock %}
+
+{% block main %}
+        <div class="col-md-6 col-md-offset-3">
+            <h3>we are about fart lyfe</h3>
+            <div class="entry-body">
+                {{ flatpage.content|safe }}
+            </div>
+        </div>
+{% endblock %}

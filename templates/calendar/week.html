@@ -1,0 +1,31 @@
+{% extends 'calendar/base.html' %}
+
+
+{% block calendar %}
+                <div id="day-week-calendar">
+                    <div id="calendar-top">
+                        <div id="categories">
+                            <ul>
+                                <li>{% if not current_category %}<strong>{% endif %}<a href=".">All events</a>{% if not current_category %}</strong>{% endif %}</li>
+                                {% for category in categories %}
+                                <li> • {% if category == current_category %}<strong>{% endif %}<a href=".?category={{ category.pk }}">{{ category.name }}</a>{% if category == current_category %}</strong>{% endif %}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <form action="." method="post">{% csrf_token %}
+                            <input type="submit" name="previous" value="previous" />
+                            <input type="submit" name="next" value="next" />
+                            <input type="submit" name="today" value="today" />
+                        </form> 
+                    </div>
+                    <div class="calendar-week">
+                    {% load fart_tags %}
+                    {% for date, occurrences, hours_list, current in week %}
+                        {% item_list list=occurrences parent=date number=occurrences|length %}
+                    {% endfor %}
+                    </div>
+                </div>
+{% endblock %}
+
+
+

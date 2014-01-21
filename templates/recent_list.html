@@ -1,0 +1,12 @@
+<ul class="recent-links">
+{% for entry in list %}
+    <li>
+        <a href="{{ entry.get_absolute_url }}">
+            <div class="recent-link">
+                <div class="recent-title">{{ entry.title }}</div>
+            </div>
+        </a>
+    </li>
+{% endfor %}
+</ul>
+

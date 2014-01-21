@@ -9,6 +9,6 @@ urlpatterns = patterns('',
     url(r'^(?P<blog>[-\w0-9]+)/$', BlogPostListView.as_view(), name='blog_post_list'),
     url(r'^search/$', include('apps.search.urls')),
     url(r'^archive/', include('apps.blogs.urls.archives')), 
-    #url(r'^category/', include('apps.blogs.urls.categories')),
- 
+    url(r'^category/', include('apps.blogs.urls.categories')),
+    url(r'^tags/', include('apps.blogs.urls.tags')), 
 )    

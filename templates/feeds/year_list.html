@@ -1,0 +1,26 @@
+{% extends 'feeds/base.html' %}
+
+
+{% block header %}
+    <a href="{{ feed.get_absolute_url }}">
+        <h1 class="col-md-5 pull-right">{{ feed.title }}</h1>
+    <a>
+{% endblock %}
+
+{% block center_content %}
+            {% load fart_tags %}
+            {% for year, months in years %}
+            <div class="row panel">
+                <h3>{{ year }}</h3>
+                {% for month in months %}
+                <div class="col-md-3">
+                    <a href="{% url 'month_posts' slug=feed.slug year=year month=month|date:"b" %}">
+                        <img src="{{ month|get_month_cover_url:feed.slug }}">
+                        <h5>{{ month|date:"F" }}</h5>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+{% endblock %}
+

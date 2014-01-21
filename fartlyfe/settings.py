@@ -1,5 +1,6 @@
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
+
 # Django settings for fartlyfe project.
 
 ADMINS = (
@@ -100,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -131,15 +133,36 @@ INSTALLED_APPS = (
 
     #Third Party
     'south',
+    'tinymce',
     'photologue',
     'tagging',
     'filer',
+    'mptt',
     'easy_thumbnails',
     'calendarium',
+    'tastypie',
+    'datetimewidget',
+    'compressor',
+    'paypal',
+    'endless_pagination',
+    'shop',
+    'shop.addressmodel',
+    'shop_simplecategories',
+    'shop_simplevariations',
+    'paypal.standard.ipn',
+    'shop_paypal',
+    'debug_toolbar',
+    'bootstrap3',
+    'polymorphic',
+    'widget_tweaks',
 
     #Original
     'apps.blogs',
     'apps.podcasts',
+    'apps.feeds',
+    'apps.local_calendar',
+    'apps.search',
+    'apps.this_shop',
     'fartlyfe',
 )
 
@@ -184,6 +207,34 @@ TINYMCE_DEFAULT_CONFIG = {
 
 PHOTOLOGUE_IMAGE_FIELD_MAX_LENGTH = 255
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+
+SHOP_CART_MODIFIERS = [
+    'shop_simplevariations.cart_modifier.ProductOptionsModifier',
+    'shop_simplevariations.cart_modifier.TextOptionsModifier',
+    'apps.this_shop.modifiers.FixedShippingCosts',
+    ]
+
+SHOP_PAYMENT_BACKENDS = [
+    'shop_paypal.offsite_paypal.OffsitePaypalBackend',
+    ]
+
+SHOP_SHIPPING_FLAT_RATE = '5'
+SHOP_SHIPPING_BACKENDS = [
+    'shop.shipping.backends.flat_rate.FlatRateShipping',
+    ]
+
+PAYPAL_SANDBOX_MODE = True
+PAYPAL_RECEIVER_EMAIL = 'admin@fartlyfe.com'
+PAYPAL_CURRENCY_CODE = 'USD'
+
+
+ENDLESS_PAGINATION_PER_PAGE = 3
 
 from fartlyfe.local_settings import *
+
 

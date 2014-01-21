@@ -1,0 +1,13 @@
+{% load endless %}
+
+        {% lazy_paginate object_list %}
+        {% for item in object_list %}
+        <div class="col-md-3">
+            <a href="{{ item.get_absolute_url }}">
+                <img src="{{ item.cover.get_list_url }}">
+                <h5>
+                    {{ item.title }}
+                </h5>
+            </a>
+        </div>
+        {% endfor %}

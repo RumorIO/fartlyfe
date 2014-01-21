@@ -1,0 +1,50 @@
+{% extends 'feeds/base.html' %}
+
+{% block header %}
+                {% if feed %}
+                    {% if feed.cover %}
+                        <img src="{{ feed.cover.get_header_url }}">
+                    {% else %}
+                        <h1 class="page-top col-xs-offset-8 col-xs-4">{{ feed.title }}</h1>
+                    {% endif %}
+                    <a href="{% url 'archive_top' slug=feed.slug %}">
+                        <h4 class="pull-right">Full Archive</h4>
+                    </a>
+                {% else %}
+                    <h1 class="page-top pull-right">{{ request.path }}</h1>     
+                {% endif %}
+{% endblock %}
+
+{% block center_content %}
+            {% load fart_tags %}
+            {% load endless %}
+            {% lazy_paginate object_list %}
+            {% for post in object_list %}
+            <div class="row">
+                <div class="panel col-xs-12">
+                    <a href="{{ post.get_absolute_url }}">
+                        <h3>{{ post.title }}</h3>
+                    </a>
+                    <div class="entry-body">
+                        {{ post.body|safe }}
+                    </div>
+                    {% if post.gallery %}<div id="gallery">
+                        {% for photo in post.gallery.photos.all %}
+                        <div class="gallery-photo">
+                            <img src="{{ photo.get_blog_post_url }}">
+                            {% if photo.caption %}
+                            <div class="photo-caption">
+                                {{ photo.caption }}
+                            </div>
+                            {% endif %}
+                        </div>{% endfor %}
+                    </div>{% endif %}
+                    <div class="author-name">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
+                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ entry.tags|pluralize }}</a> : {% for tag in entry.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
+                    <div id="page-link"><a href="{{ entry.get_absolute_url }}#disqus_thread">Comment</a></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% show_more %}
+
+{% endblock %}

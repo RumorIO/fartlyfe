@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+    <head>
+        <title>Fart Lyfe »{% block title %}{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load bootstrap3 %}
+        {% bootstrap_css %}
+        {% load staticfiles %}
+        <link href="/static/css/main.css" rel="stylesheet" type="text/css">
+        <link href='http://fonts.googleapis.com/css?family=Asul' rel='stylesheet' type='text/css'>
+        {% block header_links %}{% endblock %}
+        {% block social_data %}
+        <meta property="og:url" content="http://www.fartlyfe.com" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="fart lyfe" />
+        <meta property="og:description" content="arts & entertainment happen in the midwest too" />
+        <meta property="og:image" content="http://www.fartlyfe.com/media/images/logos/share-logo.png" />
+        {% endblock %}
+    </head>
+    <body>
+        <div id="page">
+            {% block menu %}{% endblock %}
+            <div class="viewport">
+                {% block menu_button %}{% endblock %}
+                <div class="container">
+                    <header>
+                        {% block header %}{% endblock %}
+                    </header>
+                    <div id="content">
+                        {% block main %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        {% bootstrap_javascript %}
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate({paginateOnScroll: true});</script>
+        <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'fartlyfe'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+                var s = document.createElement('script'); s.async = true;
+                s.type = 'text/javascript';
+                s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+           (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        </script> 
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        {% block bottom_js %}
+        {% endblock %}
+        <script src="{{ STATIC_URL }}js/fartlyfe.js"></script>
+    </body>
+</html>
+
