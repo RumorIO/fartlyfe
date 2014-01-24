@@ -15,10 +15,10 @@
                     {% if feed.cover %}
                         <img src="{{ post.feed.cover.get_header_url }}">
                     {% else %}
-                        <h1 class="page-top col-xs-offset-8 col-xs-4">{{ post.feed.title }}</h1>
+                        <h1 class="page-top">{{ post.feed.title }}</h1>
                     {% endif %}
                     <a href="{% url 'archive_top' slug=post.feed.slug %}">
-                        <h4 class="pull-right">Full Archive</h4>
+                        <h4 class="right-side">Full Archive</h4>
                     </a>
 {% endblock %}
 
@@ -26,6 +26,17 @@
             <div class="row">
                 <div class="panel col-xs-12">
                     <h3>{{ post.title }}</h3>
+                    {% if post.media %}
+                        {% if 'audio' in post.mimetype %}
+                        <div class="panel col-xs-12">
+                            <audio controls>
+                                <source src="{{ post.media.url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                        {% elif 'video' in post.mimetype %}
+                        {% endif %}
+                    {% endif %}
                     <div class="post-body">
                         {{ post.body|safe }}
                     </div>

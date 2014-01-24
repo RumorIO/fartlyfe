@@ -157,16 +157,17 @@ INSTALLED_APPS = (
     'widget_tweaks',
 
     #Original
-    'apps.blogs',
-    'apps.podcasts',
     'apps.feeds',
     'apps.local_calendar',
     'apps.search',
     'apps.this_shop',
     'fartlyfe',
+    'apps.blogs',
+    'apps.podcasts',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -228,8 +229,7 @@ SHOP_SHIPPING_BACKENDS = [
     'shop.shipping.backends.flat_rate.FlatRateShipping',
     ]
 
-PAYPAL_SANDBOX_MODE = True
-PAYPAL_RECEIVER_EMAIL = 'admin@fartlyfe.com'
+PAYPAL_RECEIVER_EMAIL = 'wewinstudios@gmail.com'
 PAYPAL_CURRENCY_CODE = 'USD'
 
 

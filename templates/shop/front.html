@@ -14,7 +14,7 @@
         {% load endless %}
         {% lazy_paginate object_list %}
         {% for category in object_list %}
-            {% item_list list=category.products.all parent=category number=4 %}
+            {% item_list list=category.products.all parent=category number=category.products.all|length %}
         {% endfor %}
         {% show_more %}
 {% endblock %}

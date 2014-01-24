@@ -3,7 +3,8 @@
 {% block main %}
     <div class="row">
         <div class="panel col-md-5">
-            <h4><a href="{% url 'calendar_day' year=occurrence.start|date:"Y" month=occurrence.start|date:"m" day=occurrence.start|date:"d" %}">{{ occurrence.start|date:"l M j, Y" }} »</a></h4>
+            <!--<h4><a href="{% url 'calendar_day' year=occurrence.start|date:"Y" month=occurrence.start|date:"m" day=occurrence.start|date:"d" %}">{{ occurrence.start|date:"l M j, Y" }} »</a></h4>
+            --!>
             <h3{% if occurrence.event.localevent.fartlyfe_offical %} class="official-event">LEGIT FART LYFE SHIT - {% else %}>{% endif %}{{ occurrence.title }}</h3>
             <h5>{{ occurrence.start|date:"P" }}</h5>
             <h5>{{ occurrence.event.localevent.get_age_limit_display }}</h5>

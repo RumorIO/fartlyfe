@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.core.urlresolvers import reverse
 from localflavor.us.models import USStateField, PhoneNumberField
 
+import datetime
 from calendarium.models import Event, Occurrence
 from photologue.models import Photo
 
@@ -86,6 +87,12 @@ class EventModelManager(models.Manager):
         return sorted(all_occurrences, key=lambda x: x.start)
 
 
+class ApprovedEventManager(EventModelManager):
+    
+    def get_query_set(self):
+        return super(EventModelManager, self).get_query_set().filter(approved=True)
+ 
+
 class LocalEvent(Event):
 
     AGE_LIMITS = (
@@ -94,22 +101,35 @@ class LocalEvent(Event):
         (3, '21+'),
         )
 
+    
     approved = models.BooleanField()
     location = models.ForeignKey(Location, blank=True, null=True)
     age_limit = models.IntegerField(choices=AGE_LIMITS)
     price = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     fartlyfe_official = models.BooleanField()
     cover = models.ForeignKey(Photo)
+    adjusted = models.BooleanField(default=False)
 
     objects = EventModelManager()
+    shows = ApprovedEventManager()
 
     def save(self):
         if self.price == None:
             self.price = 0.00
+        if not self.adjusted:
+            self.start = self.start + datetime.timedelta(days=-1)
+            self.end = self.end + datetime.timedelta(days=-1)
+            self.adjusted = True
         return super(LocalEvent, self).save()
 
     def get_absolute_url(self):
         return reverse('calendar_event_detail', kwargs={'pk': self.pk,})
+
+
+class ApprovedEventManager(EventModelManager):
+    def get_query_set(self):
+        return super(ApprovedEventManager,self).get_query_set().filter(approved=True)
+
 
 class LocalOccurrence(Occurrence):
 

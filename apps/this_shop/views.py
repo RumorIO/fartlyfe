@@ -18,7 +18,7 @@ class ShopFrontView(AjaxListView):
     template_name = 'shop/front.html'
     page_template = 'shop/front_page.html'
     paginate_by = 3
-    queryset = Category.objects.filter(products__tangibleitem__active=True)
+    queryset = Category.objects.filter(products__tangibleitem__active=True).distinct()
 
     def get_context_data(self, **kwargs):
         context = super(ShopFrontView, self).get_context_data( **kwargs)

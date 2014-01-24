@@ -41,7 +41,7 @@ class LocalMonthView(MonthView):
             year=self.year, month=self.month, day=1, tzinfo=utc
         ) + relativedelta(months=1)
         
-        all_occurrences = LocalEvent.objects.get_occurrences( start, end, ctx.get('current_category'))
+        all_occurrences = LocalEvent.shows.get_occurrences( start, end, ctx.get('current_category'))
         for day in calendar.Calendar(firstweekday=6).itermonthdays(self.year, self.month):
             current = False
             if day:
@@ -73,7 +73,7 @@ class LocalWeekView(WeekView):
         day = 0
         start = date
         end = date + relativedelta(days=7)
-        all_occurrences = LocalEvent.objects.get_occurrences(
+        all_occurrences = LocalEvent.shows.get_occurrences(
             start, end, ctx.get('current_category'))
         while day < 7:
             current = False
@@ -99,7 +99,7 @@ class LocalDayView(DayView):
 
     def get_context_data(self, **kwargs):
         ctx = self.get_category_context()
-        all_occurrences = LocalEvent.objects.get_occurrences(
+        all_occurrences = LocalEvent.shows.get_occurrences(
             self.date, self.date, ctx.get('current_category'))
         occurrences = filter(
             lambda occ, date=self.date: occ.start.replace(
@@ -134,7 +134,7 @@ class LocalOccurrenceDetailView(OccurrenceDetailView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            self.event = LocalEvent.objects.get(pk=kwargs.get('pk'))
+            self.event = LocalEvent.shows.get(pk=kwargs.get('pk'))
         except LocalEvent.DoesNotExist:
             raise Http404
         year = int(kwargs.get('year'))
@@ -155,6 +155,8 @@ class LocalOccurrenceDetailView(OccurrenceDetailView):
             while occ.start.date() < date.date():
                 occ = occ_gen.next()
         if occ.start.date() == date.date():
+            occ.start = occ.start + timedelta(days=1)
+            occ.end = occ.end + timedelta(days=1)
             self.occurrence = occ
         else:
             raise Http404

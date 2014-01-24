@@ -35,18 +35,18 @@ class Feed(models.Model):
     description = HTMLField()
     image = models.ForeignKey(Photo, blank=True, null=True, on_delete=models.SET_NULL)
     authors = models.ManyToManyField(User)
-    public = models.BooleanField()
+    public = models.BooleanField(default=False)
 
     #Podcast Info
-    is_audio_podcast = models.BooleanField()
-    is_video_podcast = models.BooleanField()
+    is_audio_podcast = models.BooleanField(default=False)
+    is_video_podcast = models.BooleanField(default=False)
     copyright = models.CharField(max_length=250, blank=True, editable=False)
     summary = models.CharField(max_length=250, blank=True, editable=False)
-    explicit = models.BooleanField()
+    explicit = models.BooleanField(default=False)
     itunes_link = models.URLField(max_length=250, blank=True)
     copyright = models.CharField(max_length=250, blank=True)
-    block = models.BooleanField()
-    complete = models.BooleanField()
+    block = models.BooleanField(default=False)
+    complete = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['title']
@@ -126,17 +126,17 @@ class Post(models.Model):
     cover = models.ForeignKey(Photo)
     gallery = models.ForeignKey(Gallery, blank=True, null=True, default=None)
     tags = TagField(help_text="Seperate with spaces. Put multi-word tags in quotes.", verbose_name='tags')
-    featured = models.BooleanField()
+    featured = models.BooleanField(default=False)
 
     #Media
     media = models.FileField(upload_to=content_file_name, blank=True, null=True)
 
     #Podcast-specific info
-    explicit = models.BooleanField()
+    explicit = models.BooleanField(default=False)
     description = models.CharField(max_length=250, blank=True)
     mimetype = models.CharField(max_length=250, blank=True, editable=False)
     duration = models.CharField(max_length=250, blank=True, editable=False)
-    block = models.BooleanField()
+    block = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-pub_date']
@@ -153,7 +153,8 @@ class Post(models.Model):
         if 'audio' in self.mimetype:
             import audioread
             self.duration = int(audioread.audio_open(self.media.path).duration)
-        elif 'video' in self.mimetype:
+        elif ('video' in self.mimetype) and self.media:
+            import subprocess
             process = subprocess.Popen(['/usr/bin/ffmpeg', '-i', self.media.path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             stdout, stderr = process.communicate()
             matches = re.search(r"Duration:\s{1}(?P\d+?):(?P\d+?):(?P\d+\.\d+?),", stdout, re.DOTALL).groupdict()

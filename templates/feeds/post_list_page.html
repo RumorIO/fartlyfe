@@ -8,6 +8,17 @@
                     <a href="{{ post.get_absolute_url }}">
                         <h3>{{ post.title }}</h3>
                     </a>
+                    {% if post.media %}
+                        {% if 'audio' in post.mimetype %}
+                        <div class="panel col-xs-12">
+                            <audio controls>
+                                <source src="{{ post.media.url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                        {% elif 'video' in post.mimetype %}
+                        {% endif %}
+                    {% endif %}
                     <div class="entry-body">
                         {{ post.body|safe }}
                     </div>
@@ -23,3 +34,4 @@
                 </div>
             </div>
             {% endfor %}
+            {% show_more %}
