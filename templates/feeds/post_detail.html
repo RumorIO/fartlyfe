@@ -52,7 +52,6 @@
                         </div>{% endfor %}
                     </div>{% endif %}
                     <div class="author-name pull-right">–– {% for author in post.feed.authors.all %}{{ author.get_full_name }} {% endfor %}; {{ post.pub_date|date:"N j, Y" }}</div>
-                    <div id="tags"><a href="{% url 'all_tags' %}">Tag{{ post.tags|pluralize }}</a> : {% for tag in post.tag.all %}<a href="{{ tag.get_absolute_url }}">{{ tag.title }}  </a>{% endfor %}</div>
                     <!-- AddThis Button BEGIN -->
                     <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
                     <a class="addthis_button_preferred_1"></a>
