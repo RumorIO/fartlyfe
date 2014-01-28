@@ -4,6 +4,7 @@ from django.views.generic.dates import YearArchiveView, MonthArchiveView
 from endless_pagination.views import AjaxListView
 
 from apps.feeds.models import Post
+from apps.feeds.xml import RssFeed, AtomFeed, iTunesPodcastsFeed
 from apps.feeds.views import PostsByFeedView, FeedTopArchiveView, FeedYearArchiveView, FeedMonthArchiveView, PostDetailView
  
 urlpatterns = patterns('',
@@ -15,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^(?P<feed>[-\w\d]+)/(?P<year>\d{4})/(?P<month>\w{3})/(?P<day>\d{2})/(?P<slug>[-\w\d]+)/$', PostDetailView.as_view(), name='post_detail'),
 
     
-    #url(r'^(?P<slug>[-\w\d]+)/subscribe/rss.xml$', RSSFeed(), name="feed-rss"),
-    #url(r'^(?P<slug>[-\w\d]+)/subscribe/atom.xml$', AtomFeed(), name="atom-rss"),
-    #url(r'^(?P<slug>[-\w\d]+)/subscribe/podcast.xml$', PodcastFeed(), name="podcast-rss"),
+    url(r'^(?P<slug>[-\w\d]+)/subscribe/rss.xml$', RssFeed(), name="feed-rss"),
+    url(r'^(?P<slug>[-\w\d]+)/subscribe/atom.xml$', AtomFeed(), name="atom-rss"),
+    url(r'^(?P<slug>[-\w\d]+)/subscribe/podcast.xml$', iTunesPodcastsFeed(), name="podcast-rss"),
 )
