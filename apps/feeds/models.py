@@ -17,7 +17,11 @@ from tagging.managers import ModelTagManager, ModelTaggedItemManager
 
 def content_file_name(instance, filename):
     today = datetime.datetime.strftime(datetime.datetime.now(), '%Y/%m/%d')
-    return '/'.join(['content', os.path.splitext(filename)[1][1:], today, filename])
+    file_name = '/'.join(['content', os.path.splitext(filename)[1][1:], today, filename])
+    if len(file_name) > 255:
+        return file_name[:255]
+    else:
+        return file_name
 
 
 class PublicFeedManager(models.Manager):
