@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView
 from endless_pagination.views import AjaxListView
 
 from apps.feeds.models import Post, Feed
+from apps.feeds.xml import PodcastReplacement
 from apps.feeds.views import FeedTopArchiveView, FeedYearArchiveView, FeedMonthArchiveView, PostDetailView
  
 urlpatterns = patterns('',
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
                             page_template = 'feeds/feed_list_page.html',
                             queryset = Feed.published.filter(post__mimetype__icontains='video').distinct(),), name='watch_feeds'),
 
+    url(r'^podcasts/(?P<slug>[-\w\d]+)/podcast.xml$', PodcastReplacement(), name='podcast_replacement'),
 
     url(r'^tags/', include('apps.feeds.urls.tags')),
     url(r'^topics/', include('apps.feeds.urls.topics')),

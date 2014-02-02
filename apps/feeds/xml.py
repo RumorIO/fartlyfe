@@ -1,15 +1,18 @@
 import re
-import time
 import datetime
 import audioread
-from email.Utils import formatdate
 
 from django.db.models import Q
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib.syndication.views import Feed as BaseFeed
 from django.utils.feedgenerator import Atom1Feed, Rss201rev2Feed
 
 from apps.feeds.models import Post, Feed
+site = Site.objects.get(id=settings.SITE_ID)
+prefix = 'http://' + site.domain
 
 
 tags = re.compile('<.*?>')
@@ -24,7 +27,7 @@ class RssFeed(BaseFeed):
         return obj.title
 
     def link(self, obj):
-        return obj.get_absolute_url()
+        return prefix + obj.get_absolute_url()
 
     def description(self, obj):
         import re
@@ -69,14 +72,15 @@ class iTunesPodcastsFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement(u'itunes:summary', self.feed['description'])
         handler.addQuickElement(u'itunes:image', attrs={'href':self.feed['iTunes_image_url']})
         handler.addQuickElement(u'itunes:explicit', self.feed['explicit'])
+        if self.feed.has_key('itunes_new_feed'):
+            handler.addQuickElement(u'itunes:new-feed-url', self.feed['itunes_new_feed'])
         #handler.addQuickElement(u'itunes:block', self.feed['block'])
         #handler.addQuickElement(u'itunes:complete', self.feed['complete'])
 
     def add_item_elements(self,  handler, item):
         super(iTunesPodcastsFeedGenerator, self).add_item_elements(handler, item)
         handler.addQuickElement(u'guid', item['unique_id'])
-        handler.addQuickElement(u'enclosure',
-        attrs={'url':item['enclosure'].url, 'length':item['enclosure'].length, 'type':item['enclosure'].mime_type})
+        handler.addQuickElement(u'enclosure', attrs={'url':item['enclosure'].url, 'length':item['enclosure'].length, 'type':item['enclosure'].mime_type})
         handler.addQuickElement(u'pubDate', item['pubdate'])
         handler.addQuickElement(u'itunes:title', item['title'])
         handler.addQuickElement(u'itunes:author', item['author_name'])
@@ -94,13 +98,13 @@ class iTunesPodcastPost():
         self.summary = post.summary
         self.subtitle = tags.sub('', post.description)
         self.author = ' '.join([author.get_full_name() for author in post.feed.authors.all()])
-        self.enclosure_url = post.media.url
+        self.enclosure_url = prefix + post.media.url
         self.enclosure_length = post.media.size
-        self.enclosure_mime_type = post.mimetype
+        self.enclosure_mime_type = post.mimetype.split("'")[1] or ''
         self.duration = post.duration
         self.explicit = 'yes' if post.explicit else 'no'
         self.block = 'yes' if post.block else 'no'
-        self.pubdate = formatdate(time.mktime(post.pub_date.timetuple()))
+        self.pubdate = post.pub_date.strftime('%a, %d %b %Y %H:%M:%S')
 
     def __unicode__(self):
         return self.title
@@ -135,7 +139,7 @@ class iTunesPodcastsFeed(RssFeed):
         author_name = ' '.join([author.get_full_name() for author in obj.authors.all()])
         subtitle = obj.summary
         summary = obj.description
-        extra['iTunes_name'] = str([author.get_full_name() + ' ' for author in obj.authors.all()])
+        extra['iTunes_name'] = ' '.join([author.get_full_name() for author in obj.authors.all()])
         extra['iTunes_email'] = obj.authors.all()[0].email
         extra['iTunes_image_url'] = self.image_url(obj)
         extra['explicit'] = 'yes' if obj.explicit else 'no'
@@ -155,5 +159,15 @@ class iTunesPodcastsFeed(RssFeed):
 
     def item_description(self, item):
         return item.summary
+
+
+class PodcastReplacement(iTunesPodcastsFeed):
+
+    def feed_extra_kwargs(self, obj):
+        extra = super(PodcastReplacement, self).feed_extra_kwargs(obj)
+        extra['itunes_new_feed'] = prefix + reverse('podcast-rss', args=[obj.slug,])
+        return extra
+    
+    
 
 
